@@ -15,6 +15,10 @@ run/main_scene="res://test_scene.tscn"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+WebInputHelper="*res://WebInput.gd"
+
 [input_devices]
 
 sensors/enable_accelerometer=true
