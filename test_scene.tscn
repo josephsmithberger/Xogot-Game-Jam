@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=7 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://gyro_test.gd" id="1_uhqqe"]
+[ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://button.gd" id="2_ia1lp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -46,3 +47,6 @@ layout_mode = 0
 offset_right = 24.0
 offset_bottom = 20.0
 text = "Request Gyro"
+script = ExtResource("2_ia1lp")
+
+[connection signal="pressed" from="CanvasLayer/Control/Button" to="CanvasLayer/Control/Button" method="_on_pressed"]
