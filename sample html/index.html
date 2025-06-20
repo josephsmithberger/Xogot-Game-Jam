@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="emulatedGamePad.js"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      
+      const virtualGamepad = new VirtualGamepadUI({
+          showOnScreenControls: false,
+          buttonConfig: {
+              a: { index: 0 },
+              b: { index: 1 },
+              x: { index: 2 },
+              y: { index: 3 },
+              menu: { index: 16 }
+          },
+          joystickConfig: {
+              left: { 
+                  horizontalAxis: 0,
+                  verticalAxis: 1
+              },
+              right: {
+                  horizontalAxis: 2,
+                  verticalAxis: 3
+              }
+          }
+      });
+      window.virtualGamepad = virtualGamepad;
+      
+      // Initialize the gamepad controller with the configuration from Godot
+      // Use the passed onScreenController value from the server
+      virtualGamepad.simpleSetup(ON_SCREEN_CONTROLLER);
+    </script>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport" 
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover"
+    />
+    <!-- Prevent iOS zooming -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Xogot Game Jam</title>
+    <style>
+      html,
+      body,
+      #canvas {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        touch-action: none;
+      }
+
+      body {
+        color: white;
+        background-color: black;
+        overflow: hidden;
+        touch-action: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+
+      #canvas {
+        display: block;
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      #canvas:focus {
+        outline: none;
+      }
+
+      #status,
+      #status-splash,
+      #status-progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+
+      #status,
+      #status-splash {
+        top: 0;
+        bottom: 0;
+      }
+
+      #status {
+        background-color: #242424;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        visibility: hidden;
+      }
+
+      #status-splash {
+        max-height: 100%;
+        max-width: 100%;
+        margin: auto;
+      }
+
+      #status-progress,
+      #status-notice {
+        display: none;
+      }
+
+      #status-progress {
+        bottom: 10%;
+        width: 50%;
+        margin: 0 auto;
+      }
+
+      #status-notice {
+        background-color: #5b3943;
+        border-radius: 0.5rem;
+        border: 1px solid #9b3943;
+        color: #e0e0e0;
+        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
+        line-height: 1.3;
+        margin: 0 2rem;
+        overflow: hidden;
+        padding: 1rem;
+        text-align: center;
+        z-index: 1;
+      }
+    </style>
+    <link
+      id="-gd-engine-icon"
+      rel="icon"
+      type="image/png"
+      href="null"
+    />
+    <link rel="apple-touch-icon" href="null" />
+  </head>
+  <body>
+    <canvas id="canvas">Your browser does not support the canvas tag.</canvas>
+
+    <!-- Made with Xogot link -->
+    <div id="xogot-credit" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center;">
+      made with <a href="https://www.xogot.com" target="_blank" style="color: #888; text-decoration: none; border-bottom: 1px dotted #888;">Xogot</a>
+    </div>
+
+    <noscript>Your browser does not support JavaScript.</noscript>
+
+    <!-- Add toggle button for on-screen controls -->
+    <!-- {{SHOW_GAMEPAD_CONTROLS_START}} -->
+    <div 
+      id="toggle-controls" 
+      style="position: absolute; top: 10px; right: 60px; z-index: 101; background-color: rgba(100, 100, 100, 0.7); 
+             border: 2px solid black; box-shadow: 0 0 0 2px white; border-radius: 8px; padding: 8px; 
+             color: white; font-weight: bold; cursor: pointer; touch-action: manipulation;
+             user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
+             text-shadow: 1px 1px 0 #000; font-size: 18px; line-height: 1;"
+      title="Toggle on-screen controls"
+    >
+      🎮
+    </div>
+    <!-- {{SHOW_GAMEPAD_CONTROLS_END}} -->
+
+    <!-- Add full screen toggle button -->
+    <div 
+      id="fullscreen-toggle" 
+      style="position: fixed; top: 10px; right: 10px; z-index: 9999; background-color: rgba(100, 100, 100, 0.7); 
+             border: 2px solid black; box-shadow: 0 0 0 2px white; border-radius: 8px; padding: 8px; 
+             color: white; font-weight: bold; cursor: pointer; touch-action: manipulation;
+             user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
+             text-shadow: 1px 1px 0 #000; font-size: 18px; line-height: 1;"
+      title="Toggle fullscreen"
+    >
+      ⛶
+    </div>
+
+    <!-- Add the gamepad UI container elements -->
+    <!-- {{SHOW_GAMEPAD_CONTROLS_START}} -->
+    <div id="virtual-gamepad-container" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 70%; pointer-events: none; z-index: 100;">
+      <div id="app-left" style="position: absolute; left: 0; bottom: 20px; width: 50%; height: 100%; pointer-events: auto;"></div>
+      <div id="app-right" style="position: absolute; right: 0; bottom: 20px; width: 50%; height: 100%; pointer-events: auto;">
+        <div id="app-right-joystick" style="position: absolute; bottom: 0; width: 100%; height: 100%;"></div>
+        <div id="app-right-buttons" style="position: absolute; bottom: 30px; right: 20px; width: 65%; height: 45%;"></div>
+      </div>
+    </div>
+    <!-- {{SHOW_GAMEPAD_CONTROLS_END}} -->
+
+    <div id="status">
+      <img id="status-splash" src="index.png" alt="" />
+      <progress id="status-progress"></progress>
+      <div id="status-notice"></div>
+    </div>
+    
+    <!-- Setup the on-screen controller directly -->
+    <!-- {{SHOW_GAMEPAD_CONTROLS_START}} -->
+    <script>
+      // First, determine if the device has a touchscreen
+      const hasTouchScreen = () => {
+        if ('maxTouchPoints' in navigator) {
+          return navigator.maxTouchPoints > 0;
+        } else if ('msMaxTouchPoints' in navigator) {
+          return navigator.msMaxTouchPoints > 0;
+        } else {
+          const mQ = window.matchMedia && matchMedia('(pointer:coarse)');
+          if (mQ && mQ.media === '(pointer:coarse)') {
+            return !!mQ.matches;
+          } else if ('orientation' in window) {
+            return true; // Deprecated, but good fallback
+          } else {
+            // Only as a last resort, fall back to user agent
+            const UA = navigator.userAgent;
+            return /\b(BlackBerry|webOS|iPhone|IEMobile|Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+          }
+        }
+      };
+
+      // Custom styling for gamepad controls
+      const applyCustomGamepadStyling = () => {
+        // Make joysticks larger
+        const joystickScale = 1.6; // 60% larger
+
+        // Find all joystick elements and add contrast styling
+        const joysticks = document.querySelectorAll('.Gamepad-joystick');
+        joysticks.forEach(joystick => {
+          // Get current radius
+          const currentSize = parseInt(getComputedStyle(joystick).width);
+          const newSize = currentSize * joystickScale;
+          
+          // Apply new size and improved visibility
+          joystick.style.width = `${newSize}px`;
+          joystick.style.height = `${newSize}px`;
+          joystick.style.minWidth = `${newSize}px`;
+          joystick.style.backgroundColor = 'rgba(100, 100, 100, 0.5)';
+          joystick.style.border = '2px solid black';
+          joystick.style.boxShadow = '0 0 0 2px white';
+
+          // Also scale the knob and add contrast
+          const knob = joystick.querySelector('.Gamepad-joystick-knob');
+          if (knob) {
+            const knobSize = parseInt(getComputedStyle(knob).width) * joystickScale;
+            knob.style.width = `${knobSize}px`;
+            knob.style.height = `${knobSize}px`;
+            knob.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+            knob.style.border = '2px solid black';
+          }
+        });
+
+        // Position left joystick in bottom left corner
+        const leftJoystickAnchor = document.querySelector('#app-left .Gamepad-anchor');
+        if (leftJoystickAnchor) {
+          leftJoystickAnchor.style.left = '25%';
+          leftJoystickAnchor.style.top = '75%';
+        }
+
+        // Make button area wider
+        const buttonArea = document.getElementById('app-right-buttons');
+        if (buttonArea) {
+          buttonArea.style.width = '75%';
+          buttonArea.style.height = '50%';
+        }
+        
+        // Style all buttons for better visibility
+        const buttons = document.querySelectorAll('.Gamepad-button');
+        buttons.forEach(button => {
+          button.style.backgroundColor = 'rgba(100, 100, 100, 0.5)';
+          button.style.border = '2px solid black';
+          button.style.boxShadow = '0 0 0 2px white';
+          button.style.color = 'white';
+          button.style.textShadow = '1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000';
+          button.style.fontWeight = 'bold';
+        });
+        
+        // Add active state styles
+        const style = document.createElement('style');
+        style.textContent = `
+          .Gamepad-button.is-active, .Gamepad-joystick.is-active {
+            background-color: rgba(220, 220, 220, 0.8) !important;
+            border: 2px solid white !important;
+            box-shadow: 0 0 0 2px black !important;
+          }
+          .Gamepad-button.is-active {
+            color: black !important;
+            text-shadow: 1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff !important;
+          }
+          .Gamepad-joystick.is-active .Gamepad-joystick-knob {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            border: 2px solid white !important;
+          }
+        `;
+        document.head.appendChild(style);
+      };
+
+      // Track controller visibility state - only default to visible on touch devices
+      let controlsVisible = hasTouchScreen();
+      
+      // Hide controls container initially if not on a touch device
+      if (!controlsVisible) {
+        const container = document.getElementById('virtual-gamepad-container');
+        if (container) {
+          container.style.display = 'none';
+          
+          // Disable pointer events as well
+          container.style.pointerEvents = 'none';
+          const leftArea = document.getElementById('app-left');
+          const rightArea = document.getElementById('app-right');
+          if (leftArea) leftArea.style.pointerEvents = 'none';
+          if (rightArea) rightArea.style.pointerEvents = 'none';
+        }
+        
+        // Also update the toggle button appearance
+        const toggleButton = document.getElementById('toggle-controls');
+        if (toggleButton) {
+          toggleButton.style.backgroundColor = 'rgba(50, 50, 50, 0.7)';
+          toggleButton.style.boxShadow = '0 0 0 2px #666';
+        }
+      }
+
+      // Set up toggle button functionality
+      const toggleButton = document.getElementById('toggle-controls');
+      if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+          controlsVisible = !controlsVisible;
+          
+          // Update toggle button appearance
+          toggleButton.style.backgroundColor = controlsVisible 
+            ? 'rgba(100, 100, 100, 0.7)' 
+            : 'rgba(50, 50, 50, 0.7)';
+          toggleButton.style.boxShadow = controlsVisible
+            ? '0 0 0 2px white'
+            : '0 0 0 2px #666';
+          
+          // Toggle visibility and pointer events
+          const container = document.getElementById('virtual-gamepad-container');
+          if (container) {
+            if (controlsVisible) {
+              container.style.display = 'block';
+              // Enable pointer events on the controller areas
+              const leftArea = document.getElementById('app-left');
+              const rightArea = document.getElementById('app-right');
+              if (leftArea) leftArea.style.pointerEvents = 'auto';
+              if (rightArea) rightArea.style.pointerEvents = 'auto';
+            } else {
+              container.style.display = 'none';
+              // Completely disable pointer events on the entire container
+              // This ensures all touch events pass through to the game canvas
+              container.style.pointerEvents = 'none';
+              const leftArea = document.getElementById('app-left');
+              const rightArea = document.getElementById('app-right');
+              if (leftArea) leftArea.style.pointerEvents = 'none';
+              if (rightArea) rightArea.style.pointerEvents = 'none';
+            }
+          }
+          
+          // Update gamepad config and recreate controllers if needed
+          if (typeof virtualGamepad !== 'undefined') {
+            if (controlsVisible) {
+              // When turning back on, we need to recreate the controllers
+              virtualGamepad.simpleSetup(ON_SCREEN_CONTROLLER);
+              // Apply styling to the recreated controllers
+              setTimeout(applyCustomGamepadStyling, 200);
+            } else {
+              // When turning off, completely disable the controllers
+              virtualGamepad.simpleSetup(null);
+            }
+          }
+        });
+        
+        // Add hover effect
+        toggleButton.addEventListener('mouseover', () => {
+          toggleButton.style.backgroundColor = controlsVisible 
+            ? 'rgba(120, 120, 120, 0.8)' 
+            : 'rgba(70, 70, 70, 0.8)';
+        });
+        
+        toggleButton.addEventListener('mouseout', () => {
+          toggleButton.style.backgroundColor = controlsVisible 
+            ? 'rgba(100, 100, 100, 0.7)' 
+            : 'rgba(50, 50, 50, 0.7)';
+        });
+      }
+
+      // Directly call the virtualGamepad.simpleSetup function
+      if (typeof virtualGamepad !== 'undefined') {
+        // Only set up the controller if we're on a touch device or the user has manually enabled it
+        if (controlsVisible) {
+          virtualGamepad.simpleSetup(ON_SCREEN_CONTROLLER);
+          // Apply custom styling after a small delay to ensure elements are rendered
+          setTimeout(applyCustomGamepadStyling, 200);
+        } else {
+          // Disable the virtual gamepad by default on non-touch devices
+          virtualGamepad.simpleSetup(null);
+        }
+      } else {
+        // If the virtualGamepad is not yet available, wait for it
+        window.addEventListener('DOMContentLoaded', () => {
+          if (typeof virtualGamepad !== 'undefined') {
+            if (controlsVisible) {
+              virtualGamepad.simpleSetup(ON_SCREEN_CONTROLLER);
+              setTimeout(applyCustomGamepadStyling, 200);
+            } else {
+              virtualGamepad.simpleSetup(null);
+            }
+          }
+        });
+      }
+    </script>
+    <!-- {{SHOW_GAMEPAD_CONTROLS_END}} -->
+
+    <!-- Setup the fullscreen button functionality -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const fullscreenToggle = document.getElementById('fullscreen-toggle');
+        const canvas = document.getElementById('canvas');
+        const gamepadContainer = document.getElementById('virtual-gamepad-container');
+        const controlsToggle = document.getElementById('toggle-controls');
+        
+        // Enhanced iOS detection - specifically detect iPhone vs iPad
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isIPhone = /iPhone/.test(navigator.userAgent) && !window.MSStream;
+        const isIPad = /iPad/.test(navigator.userAgent) && !window.MSStream;
+        
+        // Check if fullscreen is supported
+        const fullscreenEnabled = 
+          document.fullscreenEnabled || 
+          document.webkitFullscreenEnabled || 
+          document.mozFullScreenEnabled || 
+          document.msFullscreenEnabled;
+        
+        // Add viewport meta for iPhone to ensure proper scaling
+        if (isIPhone) {
+          // Improve iPhone viewport handling
+          const meta = document.createElement('meta');
+          meta.name = 'viewport';
+          meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+          document.head.appendChild(meta);
+        }
+        
+        // Hide button if fullscreen is not supported and not on iOS
+        // On iOS we'll use it for a different purpose
+        if (!fullscreenEnabled) {
+          fullscreenToggle.style.display = 'none';
+        }
+        
+        // Function to toggle fullscreen
+        function toggleFullScreen() {
+          // For iOS, we'll use a different approach
+          if (isIOS) {
+            // Toggle a class on the body to make the canvas fill the screen
+            document.body.classList.toggle('ios-fullscreen');
+            
+            if (document.body.classList.contains('ios-fullscreen')) {
+              // Make canvas fill the screen
+              canvas.style.position = 'fixed';
+              canvas.style.top = '0';
+              canvas.style.left = '0';
+              canvas.style.width = '100%';
+              canvas.style.height = '100%';
+              canvas.style.zIndex = '5000';
+              
+              // Update button appearance
+              fullscreenToggle.innerHTML = '⮿'; 
+              fullscreenToggle.title = 'Exit fullscreen';
+              
+              // Ensure fullscreen toggle is above everything
+              fullscreenToggle.style.position = 'fixed';
+              fullscreenToggle.style.zIndex = '9999';
+              
+              // Always keep the toggle controls visible in fullscreen mode
+              if (controlsToggle) {
+                controlsToggle.style.position = 'fixed';
+                controlsToggle.style.zIndex = '9999';
+                // Add to body to ensure it's above everything
+                document.body.appendChild(controlsToggle);
+              }
+              
+              // Handle virtual gamepad visibility
+              ensureGamepadVisibility();
+              
+              // Add extra styles for iOS fullscreen mode
+              const style = document.createElement('style');
+              style.id = 'ios-fullscreen-style';
+              style.textContent = `
+                body.ios-fullscreen {
+                  position: fixed;
+                  width: 100%;
+                  height: 100%;
+                  overflow: hidden;
+                  touch-action: none;
+                  -webkit-overflow-scrolling: none;
+                  overscroll-behavior: none;
+                }
+                body.ios-fullscreen * {
+                  touch-action: pan-x pan-y;
+                }
+                /* iPhone specific styles */
+                @supports (-webkit-touch-callout: none) {
+                  body.ios-fullscreen {
+                    height: -webkit-fill-available;
+                    /* Handle iPhone's bottom bar area */
+                    padding-bottom: env(safe-area-inset-bottom);
+                  }
+                  #fullscreen-toggle, #toggle-controls {
+                    /* Respect the notch/dynamic island area */
+                    top: max(10px, env(safe-area-inset-top)) !important;
+                  }
+                }
+              `;
+              document.head.appendChild(style);
+              
+              // Prevent scrolling and zooming
+              document.body.style.overflow = 'hidden';
+              
+              // Force a brief reflow to ensure iOS Safari renders correctly
+              setTimeout(() => {
+                // iPhone specific: force reflow by toggling a style
+                if (isIPhone) {
+                  document.body.style.display = 'none';
+                  // Force reflow
+                  void document.body.offsetHeight;
+                  document.body.style.display = '';
+                }
+              }, 50);
+              
+              // Special handling for iPhone
+              if (isIPhone) {
+                // Scroll to hide address bar and ensure true fullscreen
+                setTimeout(() => { 
+                  window.scrollTo(0, 1);
+                  // Double-check controls visibility after scrolling
+                  ensureControls();
+                }, 100);
+                
+                // Try again after a longer delay (iOS can be slow sometimes)
+                setTimeout(() => { 
+                  window.scrollTo(0, 1);
+                  ensureControls();
+                }, 500);
+              } else {
+                // For iPad, just scroll to top
+                window.scrollTo(0, 0);
+              }
+            } else {
+              // Restore normal view
+              canvas.style.position = '';
+              canvas.style.top = '';
+              canvas.style.left = '';
+              canvas.style.width = '';
+              canvas.style.height = '';
+              canvas.style.zIndex = '';
+              
+              // Update button appearance
+              fullscreenToggle.innerHTML = '⛶';
+              fullscreenToggle.title = 'Enter fullscreen';
+              
+              // Restore the controls toggle to its original position if needed
+              if (controlsToggle) {
+                controlsToggle.style.position = 'absolute';
+                controlsToggle.style.zIndex = '101';
+              }
+              
+              // Remove iOS fullscreen styles
+              const iosStyle = document.getElementById('ios-fullscreen-style');
+              if (iosStyle) {
+                iosStyle.remove();
+              }
+              
+              // Restore overflow
+              document.body.style.overflow = '';
+            }
+          } else {
+            // Standard fullscreen API for other browsers
+            if (!document.fullscreenElement && 
+                !document.mozFullScreenElement && 
+                !document.webkitFullscreenElement && 
+                !document.msFullscreenElement) {
+              // Enter fullscreen
+              if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+              } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+                document.documentElement.mozRequestFullScreen();
+              } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                document.documentElement.webkitRequestFullscreen();
+              } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+                document.documentElement.msRequestFullscreen();
+              }
+              fullscreenToggle.innerHTML = '⮿'; // Change icon to exit fullscreen
+              fullscreenToggle.title = 'Exit fullscreen';
+            } else {
+              // Exit fullscreen
+              if (document.exitFullscreen) {
+                document.exitFullscreen();
+              } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+              } else if (document.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+                document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+              }
+              fullscreenToggle.innerHTML = '⛶'; // Change icon back to enter fullscreen
+              fullscreenToggle.title = 'Enter fullscreen';
+            }
+          }
+        }
+        
+        // Listen for fullscreen change events
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+          updateFullscreenButton();
+          ensureControls();
+        }
+        
+        function updateFullscreenButton() {
+          if (document.fullscreenElement || 
+              document.mozFullScreenElement || 
+              document.webkitFullscreenElement || 
+              document.msFullscreenElement) {
+            fullscreenToggle.innerHTML = '⮿';
+            fullscreenToggle.title = 'Exit fullscreen';
+            
+            // Ensure button is visible in fullscreen mode
+            document.body.appendChild(fullscreenToggle); // Move to body to ensure it's above everything
+            fullscreenToggle.style.position = 'fixed';
+            fullscreenToggle.style.zIndex = '9999'; 
+            fullscreenToggle.style.backgroundColor = 'rgba(100, 100, 100, 0.8)'; // Slightly more visible
+          } else {
+            fullscreenToggle.innerHTML = '⛶';
+            fullscreenToggle.title = 'Enter fullscreen';
+            
+            // Reset button position when exiting fullscreen
+            fullscreenToggle.style.position = 'fixed';
+            fullscreenToggle.style.backgroundColor = 'rgba(100, 100, 100, 0.7)';
+          }
+        }
+        
+        // Make sure controls toggle button is always accessible in fullscreen mode
+        function ensureControls() {
+          // Always ensure toggle controls button is visible
+          if (controlsToggle && (document.fullscreenElement || 
+                              document.mozFullScreenElement || 
+                              document.webkitFullscreenElement || 
+                              document.msFullscreenElement || 
+                              (isIOS && document.body.classList.contains('ios-fullscreen')))) {
+            // Move to body to ensure it's above everything
+            document.body.appendChild(controlsToggle);
+            controlsToggle.style.position = 'fixed';
+            controlsToggle.style.zIndex = '9999';
+            controlsToggle.style.right = '60px';
+            
+            // Handle notch/dynamic island on iPhone X and newer
+            if (isIPhone) {
+              controlsToggle.style.top = 'max(10px, env(safe-area-inset-top))';
+            } else {
+              controlsToggle.style.top = '10px';
+            }
+          } else if (controlsToggle) {
+            // Reset position when exiting fullscreen
+            controlsToggle.style.position = 'absolute';
+            controlsToggle.style.zIndex = '101';
+            controlsToggle.style.top = '10px';
+          }
+          
+          // Also handle gamepad visibility
+          ensureGamepadVisibility();
+        }
+        
+        function ensureGamepadVisibility() {
+          // Make sure the virtual gamepad container is visible in fullscreen if it should be
+          if (gamepadContainer) {
+            // Check if controls should be visible (using the existing logic)
+            const controlsVisible = gamepadContainer.style.display !== 'none';
+            
+            if (controlsVisible) {
+              // Make sure virtual gamepad is moved to the fullscreen element if needed
+              if (document.fullscreenElement || isIOS && document.body.classList.contains('ios-fullscreen')) {
+                // Force gamepad to be visible and properly positioned
+                gamepadContainer.style.position = 'fixed';
+                gamepadContainer.style.bottom = isIPhone ? 'env(safe-area-inset-bottom, 0)' : '0';
+                gamepadContainer.style.left = '0';
+                gamepadContainer.style.width = '100%';
+                gamepadContainer.style.height = '70%';
+                gamepadContainer.style.zIndex = '9000';
+                
+                // Make sure the app-left and app-right areas are properly positioned
+                const leftArea = document.getElementById('app-left');
+                const rightArea = document.getElementById('app-right');
+                
+                if (leftArea) {
+                  leftArea.style.position = 'fixed';
+                  leftArea.style.pointerEvents = 'auto';
+                  if (isIPhone) {
+                    leftArea.style.bottom = 'env(safe-area-inset-bottom, 20px)';
+                  }
+                }
+                
+                if (rightArea) {
+                  rightArea.style.position = 'fixed';
+                  rightArea.style.pointerEvents = 'auto';
+                  if (isIPhone) {
+                    rightArea.style.bottom = 'env(safe-area-inset-bottom, 20px)';
+                  }
+                }
+                
+                // Recreate the gamepad controllers if necessary - only if controller config is available
+                if (typeof virtualGamepad !== 'undefined') {
+                  setTimeout(() => {
+                    // Recreate controllers after a small delay to ensure the DOM is settled
+                    virtualGamepad.simpleSetup(ON_SCREEN_CONTROLLER);
+                    
+                    // For iPhone, add an extra styling pass after controller creation
+                    if (isIPhone) {
+                      setTimeout(() => {
+                        // Apply any iPhone-specific controller styling here if needed
+                        ensureControls();
+                      }, 300);
+                    }
+                  }, 100);
+                }
+              }
+            }
+          }
+        }
+        
+        // Add click event to button
+        fullscreenToggle.addEventListener('click', toggleFullScreen);
+        
+        // Add hover effect
+        fullscreenToggle.addEventListener('mouseover', () => {
+          fullscreenToggle.style.backgroundColor = 'rgba(120, 120, 120, 0.8)';
+        });
+        
+        fullscreenToggle.addEventListener('mouseout', () => {
+          fullscreenToggle.style.backgroundColor = 'rgba(100, 100, 100, 0.7)';
+        });
+        
+        // For iOS devices, add an initial tap handler to ensure audio works
+        if (isIOS) {
+          document.addEventListener('touchstart', function initialTouch() {
+            // This empty function ensures the audio context can start
+            document.removeEventListener('touchstart', initialTouch);
+          }, {once: true});
+        }
+        
+        // Ensure controls are properly set up initially
+        if (document.fullscreenElement || 
+            document.mozFullScreenElement || 
+            document.webkitFullscreenElement || 
+            document.msFullscreenElement ||
+            (isIOS && document.body.classList.contains('ios-fullscreen'))) {
+          ensureControls();
+        }
+      });
+    </script>
+
+    <!-- Dynamic script loading -->
+    
+    <!-- Gyroscope and Device Motion Permission handling -->
+    <script>
+      // This function will be called by Godot to set up gyroscope communication
+      function initializeGyroListener(godotCallback) {
+        // Check if the browser supports the DeviceOrientationEvent
+        if (window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', (event) => {
+            // When the device orientation changes, call the function provided by Godot
+            // and pass the gyroscope data (beta for x, gamma for y, alpha for z)
+            if (godotCallback && typeof godotCallback === 'function') {
+              godotCallback(event.beta, event.gamma, event.alpha);
+            }
+          }, true);
+          console.log("Device orientation listener initialized.");
+        } else {
+          console.error("DeviceOrientationEvent is not supported by this browser.");
+        }
+      }
+
+      // This function will be called from Godot when the user presses the button
+      function requestMotionPermission() {
+        // Check if the permission API exists (mainly for iOS 13+)
+        if (typeof DeviceMotionEvent.requestPermission === 'function' || 
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+          
+          // Request device motion permission first if available
+          if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission()
+              .then(permissionState => {
+                if (permissionState === 'granted') {
+                  console.log("Motion permission granted.");
+                  
+                  // Then request orientation permission if available
+                  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                      .then(orientationPermissionState => {
+                        console.log("Orientation permission:", orientationPermissionState);
+                      })
+                      .catch(err => {
+                        console.error("Error requesting orientation permission:", err);
+                      });
+                  }
+                } else {
+                  console.warn("Motion permission denied:", permissionState);
+                }
+              })
+              .catch(err => {
+                console.error("Error requesting motion permission:", err);
+              });
+          }
+          // If only orientation permission API exists
+          else if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+              .then(permissionState => {
+                console.log("Orientation permission:", permissionState);
+              })
+              .catch(err => {
+                console.error("Error requesting orientation permission:", err);
+              });
+          }
+        } else {
+          // For browsers that don't require explicit permission
+          console.log("DeviceMotionEvent/DeviceOrientationEvent permission is not required on this browser.");
+        }
+      }
+    </script>
+
+    <script src="index.js"></script>
+
+    <script>
+      const GODOT_THREADS_ENABLED = false;
+      const ON_SCREEN_CONTROLLER = {};
+      const GODOT_CONFIG = {"args":[],"wasm":"index.wasm","canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","mainPack":"index.zip","experimentalVK":false,"focusCanvas":true,"gdextensionLibs":[]};
+      const engine = new Engine(GODOT_CONFIG);
+
+      (function () {
+        const statusOverlay = document.getElementById("status");
+        const statusProgress = document.getElementById("status-progress");
+        const statusNotice = document.getElementById("status-notice");
+
+        let initializing = true;
+        let statusMode = "";
+
+        function setStatusMode(mode) {
+          if (statusMode === mode || !initializing) return;
+          if (mode === "hidden") {
+            statusOverlay.remove();
+            initializing = false;
+            return;
+          }
+          statusOverlay.style.visibility = "visible";
+          statusProgress.style.display = mode === "progress" ? "block" : "none";
+          statusNotice.style.display = mode === "notice" ? "block" : "none";
+          statusMode = mode;
+        }
+
+        function setStatusNotice(text) {
+          while (statusNotice.lastChild) {
+            statusNotice.removeChild(statusNotice.lastChild);
+          }
+          text.split("\n").forEach((line) => {
+            statusNotice.appendChild(document.createTextNode(line));
+            statusNotice.appendChild(document.createElement("br"));
+          });
+        }
+
+        function displayFailureNotice(err) {
+          console.error(err);
+          setStatusNotice(err instanceof Error ? err.message : err);
+          setStatusMode("notice");
+          initializing = false;
+        }
+
+        const missing = Engine.getMissingFeatures({
+          threads: GODOT_THREADS_ENABLED,
+        });
+
+        if (missing.length !== 0) {
+          if (
+            GODOT_CONFIG["serviceWorker"] &&
+            GODOT_CONFIG["ensureCrossOriginIsolationHeaders"] &&
+            "serviceWorker" in navigator
+          ) {
+            Promise.race([
+              navigator.serviceWorker
+                .getRegistration()
+                .then((registration) => {
+                  if (registration != null)
+                    return Promise.reject(
+                      new Error("Service worker already exists.")
+                    );
+                  return registration;
+                })
+                .then(() => engine.installServiceWorker()),
+              new Promise((resolve) => setTimeout(resolve, 2000)),
+            ])
+              .catch((err) =>
+                console.error("Error while registering service worker:", err)
+              )
+              .then(() => window.location.reload());
+          } else {
+            displayFailureNotice(
+              "Error: Missing features to run Godot projects on the Web.\n" +
+                missing.join("\n")
+            );
+          }
+        } else {
+          setStatusMode("progress");
+          engine
+            .startGame({
+              onProgress: function (current, total) {
+                if (current > 0 && total > 0) {
+                  statusProgress.value = current;
+                  statusProgress.max = total;
+                } else {
+                  statusProgress.removeAttribute("value");
+                  statusProgress.removeAttribute("max");
+                }
+              },
+            })
+            .then(() => setStatusMode("hidden"), displayFailureNotice);
+        }
+      })();
+    </script>
+  </body>
+</html>
