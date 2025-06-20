@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://crymb1w5o5t48"]
+
+[ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://gyro_test.gd" id="1_uhqqe"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_opgcr"]
+sky_material = SubResource("ProceduralSkyMaterial_p2ghs")
+
+[sub_resource type="Environment" id="Environment_i4fjr"]
+background_mode = 2
+sky = SubResource("Sky_opgcr")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_xl5vp"]
+
+[node name="Test Scene" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_i4fjr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="BoxMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_xl5vp")
+script = ExtResource("1_uhqqe")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.71606)

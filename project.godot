@@ -1,0 +1,37 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Xogot Game Jam"
+run/main_scene="res://test_scene.tscn"
+config/features=PackedStringArray("4.4", "Mobile")
+config/icon="res://icon.svg"
+
+[input_devices]
+
+sensors/enable_accelerometer=true
+sensors/enable_gyroscope=true
+
+[rendering]
+
+renderer/rendering_method="mobile"
+
+[xogot]
+
+project/editorState=[{
+"column": 0,
+"current": true,
+"line": 6,
+"path": "res://gyro_test.gd",
+"type": "file"
+}]
+project/breakpoints={}
+project/xogot_game_id="825_xogot-game-jam"
