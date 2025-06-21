@@ -31,7 +31,7 @@ renderer/rendering_method="mobile"
 [xogot]
 
 project/editorState=[{
-"column": 48,
+"column": 0,
 "current": true,
 "line": 28,
 "path": "res://gyro_test.gd",
