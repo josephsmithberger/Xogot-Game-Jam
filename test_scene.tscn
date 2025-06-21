@@ -32,7 +32,7 @@ mesh = SubResource("BoxMesh_xl5vp")
 script = ExtResource("1_uhqqe")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.71606)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
