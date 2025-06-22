@@ -31,10 +31,15 @@ renderer/rendering_method="mobile"
 [xogot]
 
 project/editorState=[{
-"column": 0,
+"column": 43,
+"line": 1,
+"path": "res://game/main/camera.gd",
+"type": "file"
+}, {
+"column": 31,
 "current": true,
-"line": 28,
-"path": "res://gyro_test.gd",
+"line": 9,
+"path": "res://game/main/ball.gd",
 "type": "file"
 }]
 project/breakpoints={}

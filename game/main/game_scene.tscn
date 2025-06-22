@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=11 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://game/main/motion_permission.gd" id="1_1hhh1"]
 [ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://game/main/gyro.gd" id="2_yw0sb"]
+[ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
+[ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -18,6 +20,12 @@ glow_enabled = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ia1lp"]
 radius = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wglkj"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2ag7h"]
+size = Vector3(5.75073, 2.5708, 3.93359)
 
 [node name="game_scene" type="Node3D"]
 
@@ -65,16 +73,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0205765, 0.154664, -0.02855
 operation = 2
 size = Vector3(3.28552, 0.468384, 2.28914)
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-
-[node name="Camera3D" type="Camera3D" parent="RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, 0)
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 4.37114e-08, 1, 0, 1, -4.37114e-08, 0, 2, 0)
 fov = 70.0
+script = ExtResource("3_yw0sb")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+[node name="ball" type="RigidBody3D" parent="."]
+script = ExtResource("4_tb4mb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ball"]
 shape = SubResource("SphereShape3D_ia1lp")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="RigidBody3D"]
+[node name="CSGSphere3D" type="CSGSphere3D" parent="ball"]
 radius = 0.2
 
+[node name="Area3D" type="Area3D" parent="ball"]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ball/Area3D"]
+shape = SubResource("BoxShape3D_wglkj")
+
+[node name="bounds" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="bounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.300171, -0.7854, -0.0664062)
+shape = SubResource("BoxShape3D_2ag7h")
+
 [connection signal="pressed" from="Ui/Control/Motion Permission" to="Ui/Control/Motion Permission" method="_on_pressed"]
+[connection signal="area_exited" from="ball/Area3D" to="ball" method="_on_area_3d_area_exited"]
