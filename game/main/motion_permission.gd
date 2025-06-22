@@ -8,3 +8,4 @@ func _ready() -> void:
 
 func _on_pressed() -> void:
 	WebInputHelper.request_sensors()
+	$"../../../Level".calibrate_motion_controls()
