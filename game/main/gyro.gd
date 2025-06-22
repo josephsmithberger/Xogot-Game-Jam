@@ -1,56 +1,57 @@
 # This script controls a Node3D based on device motion or keyboard input.
-# It's designed for a physics puzzle game where you tilt the world.
+# v2: Implements smoothed, interpolated keyboard controls for a more physical feel.
 extends Node3D
 
-# Use @export to create editable properties in the Godot Inspector.
-@export_group("Sensitivity")
-@export var motion_sensitivity: float = 1.5
-@export var keyboard_sensitivity: float = 2.0
+# --- Sensitivity and Control Parameters ---
 
-# We'll store the initial state when the game starts.
+@export_group("Motion Controls")
+@export var motion_sensitivity: float = 1.5
+
+@export_group("Keyboard Controls")
+@export_range(1, 15) var keyboard_tilt_speed: float = 6.0
+@export_range(5, 45) var keyboard_max_tilt_angle: float = 20.0
+
+# --- State Variables ---
+
+# Stores the initial state for motion control calibration.
 var initial_gravity := Vector3.ZERO
 var initial_basis := Basis()
 var initialized := false
 
+# Stores the current keyboard tilt state for smooth interpolation.
+var current_keyboard_tilt := Vector2.ZERO
+
 # --- Godot Lifecycle Functions ---
 
 func _ready():
-	# Wait a brief moment for sensor data to stabilize, especially on web.
+	# Wait a brief moment for sensor data to stabilize.
 	await get_tree().create_timer(0.2).timeout
 	
-	# Get the initial gravity vector to use as a "zero point" or calibration.
 	initial_gravity = _get_current_gravity()
-	
-	# If we successfully get a gravity vector, we can initialize.
 	if initial_gravity.length() > 0:
-		# Store the starting orientation of the board from the editor.
 		initial_basis = self.basis
 		initialized = true
 	else:
-		# If gravity isn't available (e.g., on a desktop without sensors),
-		# we log a warning and can rely on keyboard input alone.
 		push_warning("Motion controls could not be initialized: Gravity vector not found.")
 
-func _process(delta):
+func _process(delta: float):
 	# Calculate the rotation from motion controls.
 	var motion_rotation = _get_motion_rotation()
 	
-	# Calculate rotation from keyboard input.
-	var keyboard_rotation = _get_keyboard_rotation(delta)
+	# Update and get the smoothed rotation from keyboard input.
+	var keyboard_rotation = _update_and_get_keyboard_rotation(delta)
 
-	# Combine the rotations. We start with the board's initial orientation,
-	# apply the tilt from the device's motion, and then add any
-	# keyboard rotation on top of that.
-	# The .inverse() fixes the "inverted controls" problem.
+	# Combine the rotations. The final orientation is the initial basis,
+	# affected by the inverse of the device's motion, with the
+	# keyboard tilt applied on top of that.
 	self.basis = initial_basis * Basis(motion_rotation.inverse() * keyboard_rotation)
 
 
 # --- Helper Functions ---
 
 func _get_current_gravity() -> Vector3:
-	"""Fetches the gravity vector based on the platform (web or native)."""
+	"""Fetches the gravity vector based on the platform."""
 	if OS.has_feature("web"):
-		# Assumes you have a WebInputHelper autoload script.
 		return WebInputHelper.get_gravity()
 	else:
 		return Input.get_gravity()
@@ -64,50 +65,50 @@ func _get_motion_rotation() -> Quaternion:
 		return Quaternion.IDENTITY
 
 	var current_gravity = _get_current_gravity()
-
-	# If the gravity vector is zero, we can't calculate a rotation.
 	if current_gravity.length() == 0:
 		return Quaternion.IDENTITY
 
-	# --- Robust Rotation Calculation ---
-	# To find the rotation between the starting 'down' and the current 'down',
-	# we find the axis and angle between the two vectors. This is more
-	# reliable than the previous implementation.
 	var vec_from = initial_gravity.normalized()
 	var vec_to = current_gravity.normalized()
 	
 	var rotation_axis = vec_from.cross(vec_to)
 	var rotation_angle = vec_from.angle_to(vec_to)
 	
-	# Handle the edge case where the vectors are nearly parallel.
 	if rotation_axis.length_squared() < 0.0001:
-		return Quaternion.IDENTITY # No rotation needed.
-
-	# Apply sensitivity to the motion.
-	rotation_angle *= motion_sensitivity
-	
-	return Quaternion(rotation_axis.normalized(), rotation_angle)
-
-func _get_keyboard_rotation(delta: float) -> Quaternion:
-	"""Calculates rotation based on keyboard input for the current frame."""
-	var angular_velocity := Vector3.ZERO
-
-	# Define input based on desired rotation axis.
-	# For a tilting board, you typically pitch on X and roll on Z.
-	# Assumes you have these actions set up in Project > Input Map.
-	var input_right = Input.get_action_strength("rotate_right") - Input.get_action_strength("rotate_left")
-	var input_down = Input.get_action_strength("rotate_down") - Input.get_action_strength("rotate_up")
-	
-	# Roll around the Z axis
-	angular_velocity.z = input_right
-	# Pitch around the X axis
-	angular_velocity.x = input_down
-	
-	if angular_velocity.length() == 0:
 		return Quaternion.IDENTITY
 
-	# Apply sensitivity and frame-rate independence (delta).
-	var rotation_angle = angular_velocity.length() * keyboard_sensitivity * delta
-	var rotation_axis = angular_velocity.normalized()
+	rotation_angle *= motion_sensitivity
+	return Quaternion(rotation_axis.normalized(), rotation_angle)
 
-	return Quaternion(rotation_axis, rotation_angle)
+func _update_and_get_keyboard_rotation(delta: float) -> Quaternion:
+	"""
+	Calculates a smoothed keyboard rotation by interpolating towards a
+	target tilt. This creates a feeling of acceleration and inertia.
+	"""
+	# 1. Determine the Target Tilt based on player input.
+	# The vector components will be -1, 0, or 1.
+	var target_tilt := Vector2.ZERO
+	target_tilt.x = Input.get_action_strength("rotate_down") - Input.get_action_strength("rotate_up")
+	target_tilt.y = Input.get_action_strength("rotate_right") - Input.get_action_strength("rotate_left")
+	
+	# 2. Smoothly Interpolate the Current Tilt towards the Target.
+	# The `lerp` function moves a value towards a target at a given weight.
+	# When a key is pressed, `current_keyboard_tilt` moves towards -1 or 1.
+	# When released, it smoothly moves back towards 0.
+	current_keyboard_tilt = lerp(current_keyboard_tilt, target_tilt, delta * keyboard_tilt_speed)
+
+	# 3. Convert the Smoothed Tilt into a Rotation Quaternion.
+	# We convert our max tilt angle from degrees to radians for calculations.
+	var max_angle_rad = deg_to_rad(keyboard_max_tilt_angle)
+	
+	# Calculate the pitch (up/down rotation around X-axis)
+	var pitch_angle = current_keyboard_tilt.x * max_angle_rad
+	var pitch_rot = Quaternion(Vector3.RIGHT, pitch_angle)
+	
+	# Calculate the roll (left/right rotation around Z-axis)
+	var roll_angle = current_keyboard_tilt.y * max_angle_rad
+	var roll_rot = Quaternion(Vector3.FORWARD, roll_angle)
+	
+	# Combine the pitch and roll rotations. The order (roll * pitch) feels
+	# natural for this kind of control.
+	return roll_rot * pitch_rot

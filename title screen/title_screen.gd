@@ -2,7 +2,9 @@ extends Control
 
 @onready var btn = $CenterContainer/Button
 @onready var spinner = $CenterContainer/LoadingSpinner
-var thread: Thread
+var scene_path = "res://game/main/game_scene.tscn"
+var loading_done = false
+var loading_started = false
 
 func _ready() -> void:
 	spinner.visible = false
@@ -13,22 +15,41 @@ func _on_button_pressed() -> void:
 	btn.visible = false
 	spinner.visible = true
 	
-	# Create thread and start it with a Callable
-	thread = Thread.new()
-	thread.start(_thread_load_scene)
+	# Start the loading process
+	loading_started = true
+	ResourceLoader.load_threaded_request(scene_path)
+	set_process(true)
 
-func _thread_load_scene() -> void:
-	# This runs on a separate thread
-	var scene_path = "res://game/main/game_scene.tscn"
-	var packed_scene = ResourceLoader.load(scene_path)
+func _process(delta: float) -> void:
+	if not loading_started:
+		return
+		
+	# Check the load status
+	var status = ResourceLoader.load_threaded_get_status(scene_path)
 	
-	# You can't directly call methods from another thread
-	# Use call_deferred to execute on the main thread
-	call_deferred("_on_scene_loaded", packed_scene)
+	match status:
+		ResourceLoader.THREAD_LOAD_LOADED:
+			# Loading is complete, switch to the new scene
+			var packed_scene = ResourceLoader.load_threaded_get(scene_path)
+			get_tree().change_scene_to_packed(packed_scene)
+			loading_done = true
+			set_process(false)
+		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			# Still loading, continue waiting
+			pass
+		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+			# Invalid resource
+			print("Error: Invalid resource path")
+			_reset_ui()
+			set_process(false)
+		ResourceLoader.THREAD_LOAD_FAILED:
+			# Loading failed
+			print("Error: Failed to load resource")
+			_reset_ui()
+			set_process(false)
 
-func _on_scene_loaded(packed_scene: PackedScene) -> void:
-	# Always wait for threads to finish
-	thread.wait_to_finish()
-	
+func _reset_ui() -> void:
 	spinner.visible = false
-	get_tree().change_scene_to_packed(packed_scene)
+	btn.visible = true
+	btn.disabled = false
+	loading_started = false
