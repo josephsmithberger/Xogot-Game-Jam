@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://crymb1w5o5t48"]
 
-[ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://gyro_test.gd" id="1_uhqqe"]
-[ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://button.gd" id="2_ia1lp"]
+[ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://game/main/motion_permission.gd" id="1_1hhh1"]
+[ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://game/main/gyro.gd" id="2_yw0sb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -19,22 +19,30 @@ glow_enabled = true
 [sub_resource type="SphereShape3D" id="SphereShape3D_ia1lp"]
 radius = 0.2
 
-[node name="Test Scene" type="Node3D"]
+[node name="game_scene" type="Node3D"]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="Ui" type="CanvasLayer" parent="."]
 
-[node name="Control" type="Control" parent="CanvasLayer"]
+[node name="Control" type="Control" parent="Ui"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Button" type="Button" parent="CanvasLayer/Control"]
+[node name="CenterContainer" type="CenterContainer" parent="Ui/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="Motion Permission" type="Button" parent="Ui/Control"]
 layout_mode = 0
 offset_right = 24.0
 offset_bottom = 20.0
 text = "Request Gyro"
-script = ExtResource("2_ia1lp")
+script = ExtResource("1_1hhh1")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_i4fjr")
@@ -43,12 +51,9 @@ environment = SubResource("Environment_i4fjr")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, 0)
-
 [node name="Level" type="CSGCombiner3D" parent="."]
 use_collision = true
-script = ExtResource("1_uhqqe")
+script = ExtResource("2_yw0sb")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.351945, -0.354536, -0.0678947)
@@ -62,10 +67,14 @@ size = Vector3(3.28552, 0.468384, 2.28914)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
 
+[node name="Camera3D" type="Camera3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, 0)
+fov = 70.0
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
 shape = SubResource("SphereShape3D_ia1lp")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="RigidBody3D"]
 radius = 0.2
 
-[connection signal="pressed" from="CanvasLayer/Control/Button" to="CanvasLayer/Control/Button" method="_on_pressed"]
+[connection signal="pressed" from="Ui/Control/Motion Permission" to="Ui/Control/Motion Permission" method="_on_pressed"]

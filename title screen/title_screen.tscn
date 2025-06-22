@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxx82kxc0h1ps"]
+
+[ext_resource type="Script" uid="uid://c1en3rsheq0i1" path="res://title screen/title_screen.gd" id="1_v7nos"]
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v7nos")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LoadingSpinner" type="Label" parent="CenterContainer"]
+visible = false
+layout_mode = 2
+text = "Loading..."
+
+[node name="Button" type="Button" parent="CenterContainer"]
+layout_mode = 2
+text = "Start Game"
+
+[connection signal="pressed" from="CenterContainer/Button" to="." method="_on_button_pressed"]

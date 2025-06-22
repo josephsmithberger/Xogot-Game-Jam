@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Xogot Game Jam"
-run/main_scene="res://test_scene.tscn"
+run/main_scene="uid://bxx82kxc0h1ps"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
