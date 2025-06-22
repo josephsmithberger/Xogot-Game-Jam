@@ -1,6 +1,6 @@
 # This script controls a Node3D based on device motion (accelerometer) or keyboard input.
-# v3: Refactored to use the accelerometer exclusively for motion controls, ensuring
-#     consistency between native and web platforms.
+# v4: Added a public function to allow motion controls to be calibrated at any time,
+#     for example, after a user grants sensor permissions via a UI button.
 extends Node3D
 
 # --- Sensitivity and Control Parameters ---
@@ -27,15 +27,9 @@ var current_keyboard_tilt := Vector2.ZERO
 # --- Godot Lifecycle Functions ---
 
 func _ready():
-	# Wait a brief moment for sensor data to stabilize before calibrating.
-	await get_tree().create_timer(0.2).timeout
-	
-	initial_acceleration = _get_current_acceleration()
-	if initial_acceleration.length() > 0:
-		initial_basis = self.basis
-		initialized = true
-	else:
-		push_warning("Motion controls could not be initialized: Accelerometer data not found.")
+	# Perform an initial attempt to calibrate motion controls.
+	# On web, this will likely only succeed if permissions were already granted.
+	calibrate_motion_controls()
 
 func _process(delta: float):
 	# Calculate the rotation from motion controls (accelerometer).
@@ -51,6 +45,28 @@ func _process(delta: float):
 	self.basis = initial_basis * Basis(motion_rotation.inverse() * keyboard_rotation)
 
 
+# --- Public Functions ---
+
+func calibrate_motion_controls():
+	"""
+	Calibrates the initial orientation for motion controls. Connect this function
+	to a UI button's 'pressed' signal to allow the user to enable or re-center
+	the motion controls at any time.
+	"""
+	# A short delay can help ensure sensor data is stable after being enabled.
+	await get_tree().create_timer(0.2).timeout
+	
+	initial_acceleration = _get_current_acceleration()
+	
+	if initial_acceleration.length() > 0:
+		initial_basis = self.basis
+		initialized = true
+		print("Motion controls have been calibrated.")
+	else:
+		initialized = false # Explicitly set to false on failure
+		push_warning("Motion control calibration failed: Accelerometer data not found.")
+
+
 # --- Helper Functions ---
 
 func _get_current_acceleration() -> Vector3:
@@ -61,7 +77,10 @@ func _get_current_acceleration() -> Vector3:
 	"""
 	if OS.has_feature("web"):
 		# The WebInputHelper autoload is expected to be configured for web builds.
-		return WebInputHelper.get_accelerometer()
+		if not Engine.is_editor_hint() and Engine.has_singleton("JavaScriptBridge"):
+			return WebInputHelper.get_accelerometer()
+		else:
+			return Vector3.ZERO
 	else:
 		return Input.get_accelerometer()
 
