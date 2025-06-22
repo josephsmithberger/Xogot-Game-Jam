@@ -1,6 +1,6 @@
 extends Control
 
-@onready var btn = $CenterContainer/Button
+@onready var btn = $CenterContainer/VBoxContainer/Start
 @onready var spinner = $CenterContainer/LoadingSpinner
 var scene_path = "res://game/main/game_scene.tscn"
 var loading_done = false
@@ -9,6 +9,10 @@ var loading_started = false
 func _ready() -> void:
 	spinner.visible = false
 	btn.visible = true
+	if OS.has_feature("web"):
+		$"CenterContainer/VBoxContainer/Request Motion".show()
+	else:
+		$"CenterContainer/VBoxContainer/Request Motion".hide()
 
 func _on_button_pressed() -> void:
 	btn.disabled = true
@@ -53,3 +57,7 @@ func _reset_ui() -> void:
 	btn.visible = true
 	btn.disabled = false
 	loading_started = false
+
+
+func _on_request_motion_pressed() -> void:
+	WebInputHelper.request_sensors()
