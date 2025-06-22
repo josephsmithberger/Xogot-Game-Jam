@@ -21,6 +21,12 @@ config/icon="res://icon.svg"
 
 WebInputHelper="*res://WebInput.gd"
 
+[display]
+
+window/size/viewport_width=480
+window/size/viewport_height=640
+window/stretch/mode="canvas_items"
+
 [input]
 
 rotate_up={
