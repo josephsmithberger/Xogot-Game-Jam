@@ -49,7 +49,9 @@ rotate_right={
 [input_devices]
 
 sensors/enable_accelerometer=true
+sensors/enable_gravity=true
 sensors/enable_gyroscope=true
+sensors/enable_magnetometer=true
 
 [rendering]
 
@@ -58,15 +60,20 @@ renderer/rendering_method="mobile"
 [xogot]
 
 project/editorState=[{
-"column": 43,
+"column": 0,
 "line": 1,
 "path": "res://game/main/camera.gd",
 "type": "file"
 }, {
-"column": 31,
-"current": true,
-"line": 9,
+"column": 0,
+"line": 0,
 "path": "res://game/main/ball.gd",
+"type": "file"
+}, {
+"column": 3,
+"current": true,
+"line": 175,
+"path": "res://WebInput.gd",
 "type": "file"
 }]
 project/breakpoints={}
