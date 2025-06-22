@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=12 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://game/main/motion_permission.gd" id="1_1hhh1"]
+[ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
 [ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://game/main/gyro.gd" id="2_yw0sb"]
 [ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
@@ -38,6 +39,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_wglkj")
 
 [node name="CenterContainer" type="CenterContainer" parent="Ui/Control"]
 layout_mode = 1
@@ -49,7 +51,7 @@ grow_horizontal = 2
 layout_mode = 0
 offset_right = 24.0
 offset_bottom = 20.0
-text = "Calibrate Motion Controsl"
+text = "Calibrate Motion Controls"
 script = ExtResource("1_1hhh1")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

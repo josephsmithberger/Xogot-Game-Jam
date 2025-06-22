@@ -13,6 +13,8 @@ config_version=5
 config/name="Xogot Game Jam"
 run/main_scene="uid://bxx82kxc0h1ps"
 config/features=PackedStringArray("4.4", "Mobile")
+boot_splash/bg_color=Color(1, 1, 1, 1)
+boot_splash/image="uid://df20ryvqsgq1l"
 config/icon="res://icon.svg"
 
 [autoload]
