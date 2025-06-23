@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://1atsunxibvmn"]
+
+[ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://game/main/gyro.gd" id="1_e7j5a"]
+
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_v0nya"]
+map_width = 3
+map_depth = 3
+map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_t7nhj"]
+subdivide_width = 51
+subdivide_depth = 51
+
+[node name="Node3D" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("HeightMapShape3D_v0nya")
+
+[node name="PlaneMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_t7nhj")
+script = ExtResource("1_e7j5a")

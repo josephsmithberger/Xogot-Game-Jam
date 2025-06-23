@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://game/main/motion_permission.gd" id="1_1hhh1"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
-[ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://game/main/gyro.gd" id="2_yw0sb"]
 [ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
+[ext_resource type="PackedScene" uid="uid://1atsunxibvmn" path="res://game/main/board.tscn" id="5_wglkj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -61,20 +61,6 @@ environment = SubResource("Environment_i4fjr")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Level" type="CSGCombiner3D" parent="."]
-use_collision = true
-script = ExtResource("2_yw0sb")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.351945, -0.354536, -0.0678947)
-use_collision = true
-size = Vector3(3.46582, 0.353027, 2.60522)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Level/CSGBox3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0205765, 0.154664, -0.0285583)
-operation = 2
-size = Vector3(3.28552, 0.468384, 2.28914)
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.5, 0)
 fov = 85.0
@@ -94,6 +80,9 @@ visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ball/Area3D"]
 shape = SubResource("BoxShape3D_wglkj")
+
+[node name="Node3D" parent="." instance=ExtResource("5_wglkj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.297484, 0)
 
 [node name="bounds" type="Area3D" parent="."]
 

@@ -69,19 +69,9 @@ renderer/rendering_method="mobile"
 
 project/editorState=[{
 "column": 0,
-"line": 1,
-"path": "res://game/main/camera.gd",
-"type": "file"
-}, {
-"column": 0,
-"line": 0,
-"path": "res://game/main/ball.gd",
-"type": "file"
-}, {
-"column": 3,
 "current": true,
-"line": 175,
-"path": "res://WebInput.gd",
+"line": 0,
+"path": "res://game/main/camera.gd",
 "type": "file"
 }]
 project/breakpoints={}
