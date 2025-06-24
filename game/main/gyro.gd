@@ -24,6 +24,10 @@ var initialized := false
 # Stores the current keyboard tilt state for smooth interpolation.
 var current_keyboard_tilt := Vector2.ZERO
 
+# Smoothing for accelerometer input
+var filtered_acceleration := Vector3.ZERO
+var accel_smoothing_factor := 0.1  # Lower = smoother but less responsive (adjust between 0.05-0.2)
+
 # --- Godot Lifecycle Functions ---
 
 func _ready():
@@ -57,6 +61,7 @@ func calibrate_motion_controls():
 	await get_tree().create_timer(0.2).timeout
 	
 	initial_acceleration = _get_current_acceleration()
+	filtered_acceleration = initial_acceleration  # Initialize filtered value
 	
 	if initial_acceleration.length() > 0:
 		initial_basis = self.basis
@@ -87,19 +92,22 @@ func _get_current_acceleration() -> Vector3:
 func _get_motion_rotation() -> Quaternion:
 	"""
 	Calculates the rotational difference from the initial calibrated
-	acceleration vector to the current one.
+	acceleration vector to the current one, with smoothing applied.
 	"""
 	if not initialized:
 		return Quaternion.IDENTITY
 
-	var current_acceleration = _get_current_acceleration()
-	if current_acceleration.length() == 0:
+	var raw_acceleration = _get_current_acceleration()
+	if raw_acceleration.length() == 0:
 		return Quaternion.IDENTITY
 
+	# Apply low-pass filter to smooth acceleration data
+	filtered_acceleration = filtered_acceleration.lerp(raw_acceleration, accel_smoothing_factor)
+	
 	# We find the rotation that transforms the initial "up" vector (from calibration)
 	# to the current "up" vector.
 	var vec_from = initial_acceleration.normalized()
-	var vec_to = current_acceleration.normalized()
+	var vec_to = filtered_acceleration.normalized()
 	
 	# To find the rotation, we need an axis and an angle.
 	var rotation_axis = vec_from.cross(vec_to)

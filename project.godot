@@ -68,11 +68,13 @@ renderer/rendering_method="mobile"
 [xogot]
 
 project/editorState=[{
-"column": 0,
+"column": 28,
 "current": true,
-"line": 0,
-"path": "res://game/main/camera.gd",
+"line": 150,
+"path": "res://game/main/gyro.gd",
 "type": "file"
 }]
-project/breakpoints={}
+project/breakpoints={
+"res://game/main/gyro.gd": PackedInt32Array(0)
+}
 project/xogot_game_id="825_xogot-game-jam"
