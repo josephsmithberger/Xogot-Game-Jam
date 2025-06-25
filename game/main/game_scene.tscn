@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=13 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://game/main/motion_permission.gd" id="1_1hhh1"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
 [ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
-[ext_resource type="PackedScene" uid="uid://1atsunxibvmn" path="res://game/main/board.tscn" id="5_wglkj"]
+[ext_resource type="Script" uid="uid://kpndg3bcdrtu" path="res://game/main/level_handler.gd" id="5_2ag7h"]
+[ext_resource type="PackedScene" uid="uid://1atsunxibvmn" path="res://game/levels/level1/level1.tscn" id="5_wglkj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -59,7 +60,10 @@ environment = SubResource("Environment_i4fjr")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+light_color = Color(0.819608, 0.745098, 0.627451, 1)
 shadow_enabled = true
+shadow_normal_bias = 3.061
+shadow_blur = 0.539
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.5, 0)
@@ -81,7 +85,10 @@ visible = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ball/Area3D"]
 shape = SubResource("BoxShape3D_wglkj")
 
-[node name="Node3D" parent="." instance=ExtResource("5_wglkj")]
+[node name="LevelHandler" type="Node3D" parent="."]
+script = ExtResource("5_2ag7h")
+
+[node name="Level1" parent="LevelHandler" instance=ExtResource("5_wglkj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.297484, 0)
 
 [node name="bounds" type="Area3D" parent="."]
@@ -91,4 +98,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.300171, -0.7854, -0.0664062
 shape = SubResource("BoxShape3D_2ag7h")
 
 [connection signal="pressed" from="Ui/Control/Motion Permission" to="Ui/Control/Motion Permission" method="_on_pressed"]
+[connection signal="next_level" from="ball" to="LevelHandler" method="_on_ball_next_level"]
+[connection signal="area_entered" from="ball/Area3D" to="ball" method="_on_area_3d_area_entered"]
 [connection signal="area_exited" from="ball/Area3D" to="ball" method="_on_area_3d_area_exited"]
