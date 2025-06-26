@@ -1,24 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=11 format=3 uid="uid://crymb1w5o5t48"]
 
-[ext_resource type="Script" uid="uid://b3mqjrwdb3ykx" path="res://game/main/motion_permission.gd" id="1_1hhh1"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
 [ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
+[ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="4_2ag7h"]
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
 [ext_resource type="Script" uid="uid://kpndg3bcdrtu" path="res://game/main/level_handler.gd" id="5_2ag7h"]
 [ext_resource type="PackedScene" uid="uid://1atsunxibvmn" path="res://game/levels/level1/level1.tscn" id="5_wglkj"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p2ghs"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-
-[sub_resource type="Sky" id="Sky_opgcr"]
-sky_material = SubResource("ProceduralSkyMaterial_p2ghs")
-
 [sub_resource type="Environment" id="Environment_i4fjr"]
-background_mode = 2
-sky = SubResource("Sky_opgcr")
+background_mode = 1
+background_color = Color(0.508947, 0.748602, 0.992203, 1)
 tonemap_mode = 2
-glow_enabled = true
+fog_mode = 1
+fog_depth_begin = 0.0
+fog_depth_end = 4000.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ia1lp"]
 radius = 0.2
@@ -27,7 +22,7 @@ radius = 0.2
 size = Vector3(0.1, 0.1, 0.1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2ag7h"]
-size = Vector3(5.75073, 2.5708, 3.93359)
+size = Vector3(7.51459, 3.8396, 8.25061)
 
 [node name="game_scene" type="Node3D"]
 
@@ -48,36 +43,22 @@ anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
 
-[node name="Motion Permission" type="Button" parent="Ui/Control"]
-layout_mode = 0
-offset_right = 24.0
-offset_bottom = 20.0
-text = "Calibrate Motion Controls"
-script = ExtResource("1_1hhh1")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_i4fjr")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-light_color = Color(0.819608, 0.745098, 0.627451, 1)
-shadow_enabled = true
-shadow_normal_bias = 3.061
-shadow_blur = 0.539
-
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.5, 0)
-fov = 85.0
+transform = Transform3D(1, 0, 0, 0, 0.333807, 0.942641, 0, -0.942641, 0.333807, 0, 4.47, 1.99)
+fov = 70.0
 script = ExtResource("3_yw0sb")
 
 [node name="ball" type="RigidBody3D" parent="."]
 script = ExtResource("4_tb4mb")
 
+[node name="bunny" parent="ball" instance=ExtResource("4_2ag7h")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ball"]
 shape = SubResource("SphereShape3D_ia1lp")
-
-[node name="CSGSphere3D" type="CSGSphere3D" parent="ball"]
-radius = 0.2
 
 [node name="Area3D" type="Area3D" parent="ball"]
 visible = false
@@ -92,12 +73,18 @@ script = ExtResource("5_2ag7h")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.297484, 0)
 
 [node name="bounds" type="Area3D" parent="."]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="bounds"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.300171, -0.7854, -0.0664062)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.26236, -0.151, 0.0364375)
 shape = SubResource("BoxShape3D_2ag7h")
 
-[connection signal="pressed" from="Ui/Control/Motion Permission" to="Ui/Control/Motion Permission" method="_on_pressed"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.929133, 0.369747, -6.70699e-09, -0.0283666, 0.0712821, 0.997053, 0.368657, -0.926394, 0.076719, 0, 2.50461, 0)
+shadow_enabled = true
+shadow_opacity = 0.5
+shadow_blur = 1.42
+
 [connection signal="next_level" from="ball" to="LevelHandler" method="_on_ball_next_level"]
 [connection signal="area_entered" from="ball/Area3D" to="ball" method="_on_area_3d_area_entered"]
 [connection signal="area_exited" from="ball/Area3D" to="ball" method="_on_area_3d_area_exited"]

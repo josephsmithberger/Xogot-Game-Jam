@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctk24xbeawjmx"]
+
+[ext_resource type="MeshLibrary" uid="uid://cmg6lq8nak1hg" path="res://textures/white_picket_fence/tilemap.tres" id="1_2vg30"]
+
+[node name="GridMap" type="GridMap"]
+mesh_library = ExtResource("1_2vg30")
+cell_size = Vector3(0.25, 0.1, 0.53)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+cell_scale = 0.5
