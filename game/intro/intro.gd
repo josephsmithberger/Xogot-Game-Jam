@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 
 
 # Called when any input is detected that hasn't been handled by the GUI.
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	# We only want to proceed if the typing is finished.
 	if _is_typing:
 		return
