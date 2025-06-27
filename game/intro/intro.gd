@@ -63,8 +63,14 @@ func _process(delta: float) -> void:
 
 # Called when any input is detected that hasn't been handled by the GUI.
 func _unhandled_input(event: InputEvent) -> void:
-	# We only want to proceed if the typing is finished AND any input is pressed.
-	if not _is_typing and event.is_pressed():
+	# We only want to proceed if the typing is finished.
+	if _is_typing:
+		return
+
+	# Check for specific inputs to advance the slide.
+	# "ui_accept" usually covers Enter, Space, and gamepad confirm buttons.
+	# We also check for a screen touch on mobile devices.
+	if event.is_action_pressed("ui_accept") or (event is InputEventScreenTouch and event.is_pressed()):
 		# Mark the event as handled so it doesn't trigger other actions.
 		get_viewport().set_input_as_handled()
 		_go_to_next_slide()
