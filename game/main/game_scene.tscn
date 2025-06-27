@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=12 format=3 uid="uid://crymb1w5o5t48"]
 
+[ext_resource type="Script" uid="uid://bnfirqhdvtvdg" path="res://game/ui/ui_handler.gd" id="1_jy2p5"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
 [ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
 [ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="4_2ag7h"]
@@ -12,6 +13,7 @@ background_mode = 1
 background_color = Color(0.508947, 0.748602, 0.992203, 1)
 tonemap_mode = 2
 fog_mode = 1
+fog_density = 1.0
 fog_depth_begin = 0.0
 fog_depth_end = 4000.0
 
@@ -27,6 +29,10 @@ size = Vector3(7.51459, 3.8396, 8.25061)
 [node name="game_scene" type="Node3D"]
 
 [node name="Ui" type="CanvasLayer" parent="."]
+script = ExtResource("1_jy2p5")
+
+[node name="Timer" type="Timer" parent="Ui"]
+autostart = true
 
 [node name="Control" type="Control" parent="Ui"]
 layout_mode = 3
@@ -39,9 +45,16 @@ theme = ExtResource("1_wglkj")
 
 [node name="CenterContainer" type="CenterContainer" parent="Ui/Control"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -549.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Ui/Control/CenterContainer"]
+layout_mode = 2
+text = "Timer"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_i4fjr")
