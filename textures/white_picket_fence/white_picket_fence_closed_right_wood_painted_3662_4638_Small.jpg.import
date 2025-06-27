@@ -3,9 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dffj2fgka86ud"
-path.etc2="res://.godot/imported/white_picket_fence_closed_right_wood_painted_3662_4638_Small.jpg-3fc54eaa8b5807d44b7094fbfa21ca1b.etc2.ctex"
+path.s3tc="res://.godot/imported/white_picket_fence_closed_right_wood_painted_3662_4638_Small.jpg-3fc54eaa8b5807d44b7094fbfa21ca1b.s3tc.ctex"
 metadata={
-"imported_formats": ["etc2_astc"],
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://textures/white_picket_fence/white_picket_fence_closed_right_wood_painted_3662_4638_Small.jpg"
-dest_files=["res://.godot/imported/white_picket_fence_closed_right_wood_painted_3662_4638_Small.jpg-3fc54eaa8b5807d44b7094fbfa21ca1b.etc2.ctex"]
+dest_files=["res://.godot/imported/white_picket_fence_closed_right_wood_painted_3662_4638_Small.jpg-3fc54eaa8b5807d44b7094fbfa21ca1b.s3tc.ctex"]
 
 [params]
 

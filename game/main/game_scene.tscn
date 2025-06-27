@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=13 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://bnfirqhdvtvdg" path="res://game/ui/ui_handler.gd" id="1_jy2p5"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
+[ext_resource type="PackedScene" uid="uid://cmsmcnwlykeb2" path="res://game/ui/finished_level.tscn" id="3_d6r30"]
 [ext_resource type="Script" uid="uid://dq7qc3mufxxuu" path="res://game/main/camera.gd" id="3_yw0sb"]
 [ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="4_2ag7h"]
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
@@ -31,9 +32,6 @@ size = Vector3(7.51459, 3.8396, 8.25061)
 [node name="Ui" type="CanvasLayer" parent="."]
 script = ExtResource("1_jy2p5")
 
-[node name="Timer" type="Timer" parent="Ui"]
-autostart = true
-
 [node name="Control" type="Control" parent="Ui"]
 layout_mode = 3
 anchors_preset = 15
@@ -55,6 +53,8 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="Ui/Control/CenterContainer"]
 layout_mode = 2
 text = "Timer"
+
+[node name="finished_level" parent="Ui" instance=ExtResource("3_d6r30")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_i4fjr")
@@ -98,6 +98,7 @@ shadow_enabled = true
 shadow_opacity = 0.5
 shadow_blur = 1.42
 
-[connection signal="next_level" from="ball" to="LevelHandler" method="_on_ball_next_level"]
+[connection signal="next_level" from="ball" to="Ui" method="_on_ball_next_level"]
+[connection signal="next_level" from="ball" to="Ui/finished_level" method="_on_ball_next_level"]
 [connection signal="area_entered" from="ball/Area3D" to="ball" method="_on_area_3d_area_entered"]
 [connection signal="area_exited" from="ball/Area3D" to="ball" method="_on_area_3d_area_exited"]

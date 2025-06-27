@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://cmsmcnwlykeb2"]
+
+[ext_resource type="Shader" uid="uid://bug34o07qc1fy" path="res://game/ui/ui_focus.gdshader" id="1_4gwv0"]
+[ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_p8x6u"]
+[ext_resource type="Shader" uid="uid://dljush0pfqg3b" path="res://game/ui/drop_shadow.gdshader" id="2_0g7m5"]
+[ext_resource type="Script" uid="uid://dehflmbor14fx" path="res://game/ui/finished_level.gd" id="2_1dns0"]
+[ext_resource type="Texture2D" uid="uid://cwaw3alhu167p" path="res://game/ui/border1.png" id="3_p8x6u"]
+[ext_resource type="Texture2D" uid="uid://cynjdlu06vhjk" path="res://game/ui/border2.png" id="4_1dns0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uuye7"]
+shader = ExtResource("1_4gwv0")
+shader_parameter/lod = 1.76
+shader_parameter/mix_percentage = 0.45
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_67f33"]
+shader = ExtResource("2_0g7m5")
+shader_parameter/shadow_offset = Vector2(4, -4)
+shader_parameter/shadow_color = Color(1, 1, 1, 0.831373)
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_12geh"]
+frames = 2
+speed_scale = 2.0
+frame_0/texture = ExtResource("3_p8x6u")
+frame_1/texture = ExtResource("4_1dns0")
+frame_1/duration = 1.0
+
+[node name="finished_level" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_p8x6u")
+script = ExtResource("2_1dns0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_uuye7")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_67f33")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AnimatedTexture_12geh")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "You did it!
+You completed this level in 
+"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Play Next Level"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

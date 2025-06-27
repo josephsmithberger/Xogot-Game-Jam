@@ -19,6 +19,3 @@ void fragment() {
     // composite: shadow where sprite is transparent
     COLOR = sh * (1.0 - spr.a) + spr;
 }
-
-
-
