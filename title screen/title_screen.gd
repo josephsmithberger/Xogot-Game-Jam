@@ -2,7 +2,7 @@ extends Control
 
 @onready var btn = $CenterContainer/VBoxContainer/Start
 @onready var spinner = $CenterContainer/LoadingSpinner
-var scene_path = "res://game/main/game_scene.tscn"
+var scene_path = "res://game/intro/intro.tscn"
 var loading_done = false
 var loading_started = false
 

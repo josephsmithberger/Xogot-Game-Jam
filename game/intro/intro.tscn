@@ -1,0 +1,205 @@
+[gd_scene load_steps=9 format=3 uid="uid://c1kh4scrducyn"]
+
+[ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="1_4v5d7"]
+[ext_resource type="Script" uid="uid://cjuxafw2418nu" path="res://game/intro/intro.gd" id="1_fsy43"]
+
+[sub_resource type="Animation" id="Animation_fsy43"]
+resource_name = "spin"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SubViewport/bunny:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_41kj2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SubViewport/bunny:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4gn25"]
+_data = {
+&"RESET": SubResource("Animation_41kj2"),
+&"spin": SubResource("Animation_fsy43")
+}
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4v5d7"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_fsy43"]
+sky_material = SubResource("ProceduralSkyMaterial_4v5d7")
+
+[sub_resource type="Environment" id="Environment_41kj2"]
+background_mode = 2
+sky = SubResource("Sky_fsy43")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fsy43")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.231411, 0.649954, 0.991968, 1)
+
+[node name="slide1" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "This is Rollbit:
+\"Roll\" + \"Rabbit\"
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="slide1"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 361.0
+offset_right = 385.0
+offset_bottom = 661.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="slide1/SubViewportContainer"]
+libraries = {
+&"": SubResource("AnimationLibrary_4gn25")
+}
+autoplay = "spin"
+
+[node name="SubViewport" type="SubViewport" parent="slide1/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(300, 300)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="slide1/SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_41kj2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="slide1/SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="slide1/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.76453)
+
+[node name="bunny" parent="slide1/SubViewportContainer/SubViewport" instance=ExtResource("1_4v5d7")]
+
+[node name="Label" type="Label" parent="slide1"]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 596.0
+offset_right = 361.0
+offset_bottom = 619.0
+text = "(click any button to proceed)"
+horizontal_alignment = 1
+
+[node name="slide2" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "He's a strange 
+rabbit..
+
+I think he was 
+the runt
+of his bunny litter."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide3" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "That didn't stop 
+'ma from choosing
+him.
+In fact, I think he
+was her first choice."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide4" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "She loves that
+thing - which is why
+I need your help!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide5" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "Rollbit got lost in
+our garden."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide6" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "Could you roll him
+back to safety?"
+horizontal_alignment = 1
+vertical_alignment = 1

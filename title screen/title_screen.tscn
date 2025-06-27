@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxx82kxc0h1ps"]
+[gd_scene load_steps=6 format=3 uid="uid://bxx82kxc0h1ps"]
 
 [ext_resource type="Script" uid="uid://c1en3rsheq0i1" path="res://title screen/title_screen.gd" id="1_v7nos"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_vjf8m"]
+[ext_resource type="Texture2D" uid="uid://cwaw3alhu167p" path="res://game/ui/border1.png" id="4_mmb60"]
+[ext_resource type="Texture2D" uid="uid://cynjdlu06vhjk" path="res://game/ui/border2.png" id="5_8d1in"]
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_oud7o"]
+frames = 2
+speed_scale = 2.0
+frame_0/texture = ExtResource("4_mmb60")
+frame_1/texture = ExtResource("5_8d1in")
+frame_1/duration = 1.0
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -13,11 +22,22 @@ grow_vertical = 2
 theme = ExtResource("1_vjf8m")
 script = ExtResource("1_v7nos")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2277, 0.646965, 0.99, 0.611765)
+
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -25.0
+offset_right = 26.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -28,14 +48,31 @@ text = "Loading..."
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
+alignment = 1
 
 [node name="Start" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 35
 text = "Start Game"
 
 [node name="Request Motion" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 30
 text = "Request Motion Controls"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("AnimatedTexture_oud7o")
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Start" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Request Motion" to="." method="_on_request_motion_pressed"]
