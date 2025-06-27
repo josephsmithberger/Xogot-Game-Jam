@@ -3,6 +3,21 @@
 [ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="1_4v5d7"]
 [ext_resource type="Script" uid="uid://cjuxafw2418nu" path="res://game/intro/intro.gd" id="1_fsy43"]
 
+[sub_resource type="Animation" id="Animation_41kj2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SubViewport/bunny:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_fsy43"]
 resource_name = "spin"
 length = 5.0
@@ -18,21 +33,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_41kj2"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SubViewport/bunny:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4gn25"]
@@ -73,6 +73,7 @@ grow_vertical = 2
 color = Color(0.231411, 0.649954, 0.991968, 1)
 
 [node name="slide1" type="Label" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -103,7 +104,7 @@ autoplay = "spin"
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(300, 300)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="slide1/SubViewportContainer/SubViewport"]
 environment = SubResource("Environment_41kj2")
@@ -201,5 +202,47 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 50
 text = "Could you roll him
 back to safety?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide7" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "Use motion control
+or your keyboard!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide8" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "(if you didn't enable motion 
+on the title screen, 
+motion controls will not work)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="slide9" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "3, 2, 1.. GO!"
 horizontal_alignment = 1
 vertical_alignment = 1

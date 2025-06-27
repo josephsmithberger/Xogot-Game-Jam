@@ -8,7 +8,7 @@ extends Control
 
 # The total number of slides you have in your scene.
 # Make sure this matches the count of your Label nodes (slide1, slide2, etc.).
-@export var total_slides: int = 6
+@export var total_slides: int = 9
 
 # The path to your main game scene.
 @export var main_game_scene: String = "res://game/main/game_scene.tscn"
