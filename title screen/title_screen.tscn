@@ -64,6 +64,24 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 30
 text = "Request Motion Controls"
 
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LinkButton" type="LinkButton" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "My Website"
+underline = 1
+uri = "https://josephsmithberger.com"
+
+[node name="LinkButton2" type="LinkButton" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "My Game"
+underline = 1
+uri = "https://store.steampowered.com/app/3045100/Mind_Garden/"
+
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15

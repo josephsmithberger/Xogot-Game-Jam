@@ -12,6 +12,7 @@ func finished_level(timer_score:String):
 	label.text = initial_text + timer_score + " seconds!"
 
 func _on_button_pressed() -> void:
+	get_tree().paused = false
 	anim()
 
 func anim():

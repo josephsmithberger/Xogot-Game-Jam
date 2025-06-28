@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://bw4o13idgt4pk"]
+[gd_scene load_steps=9 format=3 uid="uid://bw4o13idgt4pk"]
 
 [ext_resource type="Script" uid="uid://bu5imq7ltyo5f" path="res://game/main/gyro.gd" id="1_d2nis"]
 [ext_resource type="ArrayMesh" uid="uid://0w2levobmwu3" path="res://game/main/mount.res" id="2_jypa1"]
 [ext_resource type="PackedScene" uid="uid://s1brv3ce8cno" path="res://game/levels/goal/goal.tscn" id="3_x1038"]
+[ext_resource type="PackedScene" uid="uid://bm7s1xblb5j82" path="res://game/levels/level4/house.glb" id="5_8maxd"]
 [ext_resource type="ArrayMesh" uid="uid://duj6747nq4qsk" path="res://game/main/grass.res" id="6_bed4q"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ws2y"]
-size = Vector3(0.781, 0.11, 13.979)
+size = Vector3(1.21667, 0.80167, 13.979)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x08ga"]
 size = Vector3(0.549316, 0.315918, 0.495728)
@@ -25,7 +26,7 @@ motion_sensitivity = 1.2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0928275, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0127076, -0.0604296, -5.66899)
+transform = Transform3D(0.999067, 0, 0.0431835, 0, 1, 0, -0.0431835, 0, 0.999067, -0.204925, -0.406265, -5.65958)
 shape = SubResource("BoxShape3D_5ws2y")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -33,7 +34,7 @@ transform = Transform3D(0.4, 0, 0, 0, 2.1, 0, 0, 0, 7, 0, 0.0323979, -5.64472)
 mesh = ExtResource("2_jypa1")
 
 [node name="goal" parent="." instance=ExtResource("3_x1038")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0178101, 0.599395, -11.2605)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0207937, 0.599395, -10.876)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="goal"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0427246, -0.342041, 0.0862427)
@@ -44,3 +45,6 @@ sorting_offset = 0.58
 cast_shadow = 0
 gi_mode = 0
 multimesh = SubResource("MultiMesh_6hsot")
+
+[node name="house2" parent="." instance=ExtResource("5_8maxd")]
+transform = Transform3D(0.0212528, 0, 0.198868, 0, 0.2, 0, -0.198868, 0, 0.0212528, 0.064, 0.75, -11.682)

@@ -15,6 +15,7 @@ func _process(delta: float) -> void:
 		label.text = "Time: %.2f" % elapsed_time
 
 func _on_ball_next_level(level: int) -> void:
+	get_tree().paused = true
 	counting = false
 	finished_screen.finished_level("%.2f" % elapsed_time)
 	finished_screen.visible = true

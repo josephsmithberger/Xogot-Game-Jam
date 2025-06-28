@@ -2,6 +2,7 @@ extends Node3D
 
 var current_level: int = 1
 var last_level: int = 4
+var outro : String = "res://game/outro/outro.tscn"
 signal final_level
 # Preload all your level scenes
 var level_scenes := {
@@ -21,12 +22,13 @@ func _on_finished_level_next_level() -> void:
 	current_level += 1
 	get_child(0).queue_free()
 	if current_level <= last_level:
+		
 		_load_level(current_level)
 		if current_level == last_level:
 			final_level.emit()
 			$"../bounds/CollisionShape3D".shape.size = Vector3(7.5,11.23,23.43)
 	else:
-		print("All levels complete!")
+		get_tree().change_scene_to_file(outro)
 
 
 func _load_level(level: int) -> void:
@@ -35,9 +37,5 @@ func _load_level(level: int) -> void:
 	if level_scenes.has(level):
 		var level_instance = level_scenes[level].instantiate()
 		add_child(level_instance)
-		$"../ball".reset_bunny()
 	else:
 		print("Error: Level %d not found in level_scenes!" % level)
-
-func _process(delta: float) -> void:
-	print("the current level is:" + str(current_level) + " and the final level is" + str(last_level))
