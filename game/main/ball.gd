@@ -3,6 +3,9 @@ extends RigidBody3D
 var current_level:int = 1
 signal next_level(level: int)
 
+func _ready() -> void:
+	next_level.connect(get_parent()._next_level)
+
 func _on_area_3d_area_exited(area: Area3D) -> void:
 	if area.name == "bounds":
 		linear_velocity = Vector3.ZERO

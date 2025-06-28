@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4eswjcip1y2f"]
+
+[ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="1_41u45"]
+[ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="2_ktgx5"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ia1lp"]
+radius = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wglkj"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="ball" type="RigidBody3D"]
+script = ExtResource("1_41u45")
+
+[node name="bunny" parent="." instance=ExtResource("2_ktgx5")]
+process_mode = 3
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_ia1lp")
+
+[node name="Area3D" type="Area3D" parent="."]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_wglkj")
+
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="area_exited" from="Area3D" to="." method="_on_area_3d_area_exited"]

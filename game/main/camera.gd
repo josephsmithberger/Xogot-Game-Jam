@@ -1,5 +1,5 @@
 extends Camera3D
-@onready var ball : RigidBody3D = $"../ball"
+@onready var ball : RigidBody3D = $"../Node3D".get_child(0)
 var follow_speed := 2
 
 func _physics_process(delta: float) -> void:

@@ -33,7 +33,6 @@ func _on_finished_level_next_level() -> void:
 
 func _load_level(level: int) -> void:
 	$"../Ui".counting = true
-	$"../ball".reset_bunny()
 	if level_scenes.has(level):
 		var level_instance = level_scenes[level].instantiate()
 		add_child(level_instance)
