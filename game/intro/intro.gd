@@ -74,7 +74,9 @@ func _input(event: InputEvent) -> void:
 		# Mark the event as handled so it doesn't trigger other actions.
 		get_viewport().set_input_as_handled()
 		_go_to_next_slide()
-
+	if OS.is_debug_build() and Input.is_action_just_pressed("debug"):
+		_current_slide_index = 9
+		_go_to_next_slide()
 
 # --- HELPER FUNCTIONS ---
 
@@ -113,3 +115,8 @@ func _start_slide(slide_number: int) -> void:
 		# This is a safeguard in case a slide node is missing.
 		print("Error: Could not find Label node named 'slide" + str(slide_number) + "'")
 		_is_typing = false
+
+
+func _on_button_pressed() -> void:
+	_current_slide_index = 9
+	_go_to_next_slide()

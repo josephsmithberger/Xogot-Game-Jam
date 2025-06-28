@@ -21,3 +21,7 @@ func anim():
 
 func _on_ball_next_level(level: int) -> void:
 	show()
+
+func _input(event: InputEvent) -> void:
+	if OS.is_debug_build() and Input.is_action_just_pressed("debug"):
+		anim()

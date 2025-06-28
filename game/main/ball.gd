@@ -14,7 +14,11 @@ func _on_area_3d_area_entered(area: Area3D) -> void:
 		current_level += 1
 		area.monitoring = false
 		next_level.emit(current_level)
-		
+		reset_bunny()
+	elif area.name == "death":
+		reset_bunny()
+
 
 func reset_bunny():
+	linear_velocity = Vector3.ZERO
 	position = orgin

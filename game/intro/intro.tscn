@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://c1kh4scrducyn"]
+[gd_scene load_steps=10 format=3 uid="uid://c1kh4scrducyn"]
 
 [ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="1_4v5d7"]
 [ext_resource type="Script" uid="uid://cjuxafw2418nu" path="res://game/intro/intro.gd" id="1_fsy43"]
+[ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="2_41kj2"]
 
 [sub_resource type="Animation" id="Animation_41kj2"]
 length = 0.001
@@ -73,6 +74,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.231411, 0.649954, 0.991968, 1)
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -93.0
+offset_bottom = 63.0
+grow_horizontal = 0
+theme = ExtResource("2_41kj2")
+text = "Skip"
 
 [node name="slide1" type="Label" parent="."]
 layout_mode = 1
@@ -247,3 +259,5 @@ theme_override_font_sizes/font_size = 50
 text = "3, 2, 1.. GO!"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
