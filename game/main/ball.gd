@@ -6,7 +6,7 @@ signal next_level(level: int)
 func _on_area_3d_area_exited(area: Area3D) -> void:
 	if area.name == "bounds":
 		linear_velocity = Vector3.ZERO
-		position = orgin
+		reset_bunny()
 
 
 func _on_area_3d_area_entered(area: Area3D) -> void:
@@ -15,3 +15,6 @@ func _on_area_3d_area_entered(area: Area3D) -> void:
 		area.monitoring = false
 		next_level.emit(current_level)
 		
+
+func reset_bunny():
+	position = orgin

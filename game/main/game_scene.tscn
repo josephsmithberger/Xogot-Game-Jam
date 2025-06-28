@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=12 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://bnfirqhdvtvdg" path="res://game/ui/ui_handler.gd" id="1_jy2p5"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="4_2ag7h"]
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="4_tb4mb"]
 [ext_resource type="Script" uid="uid://kpndg3bcdrtu" path="res://game/main/level_handler.gd" id="5_2ag7h"]
-[ext_resource type="PackedScene" uid="uid://1atsunxibvmn" path="res://game/levels/level1/level1.tscn" id="5_wglkj"]
 
 [sub_resource type="Environment" id="Environment_i4fjr"]
 background_mode = 1
@@ -65,6 +64,7 @@ fov = 70.0
 script = ExtResource("3_yw0sb")
 
 [node name="ball" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.615855, 0)
 script = ExtResource("4_tb4mb")
 
 [node name="bunny" parent="ball" instance=ExtResource("4_2ag7h")]
@@ -82,9 +82,6 @@ shape = SubResource("BoxShape3D_wglkj")
 [node name="LevelHandler" type="Node3D" parent="."]
 script = ExtResource("5_2ag7h")
 
-[node name="Level1" parent="LevelHandler" instance=ExtResource("5_wglkj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.297484, 0)
-
 [node name="bounds" type="Area3D" parent="."]
 visible = false
 
@@ -98,6 +95,8 @@ shadow_enabled = true
 shadow_opacity = 0.5
 shadow_blur = 1.42
 
+[connection signal="next_level" from="Ui/finished_level" to="Ui" method="_on_finished_level_next_level"]
+[connection signal="next_level" from="Ui/finished_level" to="LevelHandler" method="_on_finished_level_next_level"]
 [connection signal="next_level" from="ball" to="Ui" method="_on_ball_next_level"]
 [connection signal="next_level" from="ball" to="Ui/finished_level" method="_on_ball_next_level"]
 [connection signal="area_entered" from="ball/Area3D" to="ball" method="_on_area_3d_area_entered"]

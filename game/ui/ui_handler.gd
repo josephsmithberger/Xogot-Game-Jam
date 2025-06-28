@@ -18,4 +18,9 @@ func _on_ball_next_level(level: int) -> void:
 	counting = false
 	finished_screen.finished_level("%.2f" % elapsed_time)
 	finished_screen.visible = true
+
+
+
+
+func _on_finished_level_next_level() -> void:
 	elapsed_time = 0.0

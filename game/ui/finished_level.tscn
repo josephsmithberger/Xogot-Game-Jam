@@ -87,7 +87,8 @@ alignment = 1
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Global Leaderboard"
+text = "Global Leaderboard
+planned"
 horizontal_alignment = 1
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
