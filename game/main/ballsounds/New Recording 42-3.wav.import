@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bx4ximyuhom15"
+path="res://.godot/imported/New Recording 42-3.wav-9a2cd54e2e9229735a1841365d52cf0c.sample"
+
+[deps]
+
+source_file="res://game/main/ballsounds/New Recording 42-3.wav"
+dest_files=["res://.godot/imported/New Recording 42-3.wav-9a2cd54e2e9229735a1841365d52cf0c.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

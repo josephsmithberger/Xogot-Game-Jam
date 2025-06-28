@@ -1,6 +1,7 @@
 extends RigidBody3D
 @onready var orgin : Vector3 = position
 var current_level:int = 1
+
 signal next_level(level: int)
 
 func _ready() -> void:
