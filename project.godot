@@ -73,10 +73,15 @@ project/editorState=[{
 "path": "res://game/main/gyro.gd",
 "type": "file"
 }, {
-"column": 28,
-"current": true,
+"column": 0,
 "line": 3,
 "path": "res://game/ui/ui_handler.gd",
+"type": "file"
+}, {
+"column": 0,
+"current": true,
+"line": 0,
+"path": "res://game/intro/intro.gd",
 "type": "file"
 }]
 project/breakpoints={

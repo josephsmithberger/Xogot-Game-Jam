@@ -2,20 +2,17 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rqdw1isvotr8"
-path.etc2="res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.etc2.ctex"
+uid="uid://7wyyfjmvekeu"
+path.etc2="res://.godot/imported/level2_guide.png-bba1a5e15e7e9cc06ea641b9e4fdf691.etc2.ctex"
 metadata={
 "imported_formats": ["etc2_astc"],
 "vram_texture": true
 }
-generator_parameters={
-"md5": "0adc5a554b5989d68f014b565137877d"
-}
 
 [deps]
 
-source_file="res://game/main/bunny__color.png"
-dest_files=["res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.etc2.ctex"]
+source_file="res://game/levels/level2/level2_guide.png"
+dest_files=["res://.godot/imported/level2_guide.png-bba1a5e15e7e9cc06ea641b9e4fdf691.etc2.ctex"]
 
 [params]
 
