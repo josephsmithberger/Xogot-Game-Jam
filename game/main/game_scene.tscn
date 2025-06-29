@@ -84,6 +84,7 @@ shadow_opacity = 0.5
 shadow_blur = 1.42
 
 [connection signal="next_level" from="Ui/finished_level" to="Ui" method="_on_finished_level_next_level"]
+[connection signal="next_level" from="Ui/finished_level" to="Node3D" method="_on_finished_level_next_level"]
 [connection signal="next_level" from="Ui/finished_level" to="LevelHandler" method="_on_finished_level_next_level"]
 [connection signal="new_level" from="Node3D" to="Ui" method="_on_node_3d_new_level"]
 [connection signal="new_level" from="Node3D" to="Ui/finished_level" method="_on_node_3d_new_level"]
