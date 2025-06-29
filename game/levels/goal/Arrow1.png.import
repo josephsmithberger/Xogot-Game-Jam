@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c2cjxg0s4vgns"
 path.s3tc="res://.godot/imported/Arrow1.png-2fa29f98f0413e2bb0cc345d997a5331.s3tc.ctex"
+path.etc2="res://.godot/imported/Arrow1.png-2fa29f98f0413e2bb0cc345d997a5331.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://game/levels/goal/Arrow1.png"
-dest_files=["res://.godot/imported/Arrow1.png-2fa29f98f0413e2bb0cc345d997a5331.s3tc.ctex"]
+dest_files=["res://.godot/imported/Arrow1.png-2fa29f98f0413e2bb0cc345d997a5331.s3tc.ctex", "res://.godot/imported/Arrow1.png-2fa29f98f0413e2bb0cc345d997a5331.etc2.ctex"]
 
 [params]
 

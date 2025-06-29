@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://rqdw1isvotr8"
 path.s3tc="res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.s3tc.ctex"
+path.etc2="res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://game/main/bunny__color.png"
-dest_files=["res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.s3tc.ctex"]
+dest_files=["res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.s3tc.ctex", "res://.godot/imported/bunny__color.png-d56d97ac6f823c0a55ff41ed5693c260.etc2.ctex"]
 
 [params]
 

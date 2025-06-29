@@ -17,6 +17,7 @@ func _ready() -> void:
 func _on_button_pressed() -> void:
 	btn.disabled = true
 	btn.visible = false
+	$CenterContainer/VBoxContainer.hide()
 	spinner.visible = true
 	
 	# Start the loading process

@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqordtotlub46"
 path.s3tc="res://.godot/imported/white_picket_fence_pole_wood_painted_3662_4638_Small.jpg-0d0b6d0852ff20712d5c86ffee007d68.s3tc.ctex"
+path.etc2="res://.godot/imported/white_picket_fence_pole_wood_painted_3662_4638_Small.jpg-0d0b6d0852ff20712d5c86ffee007d68.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://textures/white_picket_fence/white_picket_fence_pole_wood_painted_3662_4638_Small.jpg"
-dest_files=["res://.godot/imported/white_picket_fence_pole_wood_painted_3662_4638_Small.jpg-0d0b6d0852ff20712d5c86ffee007d68.s3tc.ctex"]
+dest_files=["res://.godot/imported/white_picket_fence_pole_wood_painted_3662_4638_Small.jpg-0d0b6d0852ff20712d5c86ffee007d68.s3tc.ctex", "res://.godot/imported/white_picket_fence_pole_wood_painted_3662_4638_Small.jpg-0d0b6d0852ff20712d5c86ffee007d68.etc2.ctex"]
 
 [params]
 
