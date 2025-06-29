@@ -1,27 +1,30 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4eswjcip1y2f"]
+[gd_scene load_steps=8 format=3 uid="uid://b4eswjcip1y2f"]
 
 [ext_resource type="Script" uid="uid://bqr7sx2wkf3kj" path="res://game/main/ball.gd" id="1_41u45"]
 [ext_resource type="PackedScene" uid="uid://qgagaai6dy2q" path="res://game/main/bunny.glb" id="2_ktgx5"]
-[ext_resource type="AudioStream" uid="uid://dyc1x6ikqnbj8" path="res://game/main/ballsounds/New Recording 42-2.wav" id="3_hnre4"]
-[ext_resource type="AudioStream" uid="uid://bx4ximyuhom15" path="res://game/main/ballsounds/New Recording 42-3.wav" id="4_2dw8o"]
-[ext_resource type="AudioStream" uid="uid://it6kbkbm48ka" path="res://game/main/ballsounds/New Recording 42.wav" id="5_r2fkr"]
+[ext_resource type="AudioStream" uid="uid://6fwb8ay5hu0d" path="res://game/main/ballsounds/Untitled.ogg" id="3_q4m3q"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_q4m3q"]
+friction = 0.8
+bounce = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ia1lp"]
 radius = 0.2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wglkj"]
-size = Vector3(0.1, 0.1, 0.1)
+size = Vector3(0.51, 0.1, 0.1)
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_l5loj"]
+playback_mode = 1
 random_pitch = 1.1
 random_volume_offset_db = 0.3
-streams_count = 3
-stream_0/stream = ExtResource("3_hnre4")
-stream_1/stream = ExtResource("4_2dw8o")
-stream_2/stream = ExtResource("5_r2fkr")
+streams_count = 1
+stream_0/stream = ExtResource("3_q4m3q")
 
 [node name="ball" type="RigidBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_q4m3q")
 script = ExtResource("1_41u45")
+impact_speed_threshold = 0.3
 
 [node name="bunny" parent="." instance=ExtResource("2_ktgx5")]
 process_mode = 3

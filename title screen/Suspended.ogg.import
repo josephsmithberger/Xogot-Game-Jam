@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b6vppmc8bksgh"
+path="res://.godot/imported/Suspended.ogg-a638e3f76403404af9b09049318a25b2.oggvorbisstr"
+
+[deps]
+
+source_file="res://title screen/Suspended.ogg"
+dest_files=["res://.godot/imported/Suspended.ogg-a638e3f76403404af9b09049318a25b2.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

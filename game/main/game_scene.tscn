@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://crymb1w5o5t48"]
+[gd_scene load_steps=11 format=3 uid="uid://crymb1w5o5t48"]
 
 [ext_resource type="Script" uid="uid://bnfirqhdvtvdg" path="res://game/ui/ui_handler.gd" id="1_jy2p5"]
 [ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_wglkj"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://kpndg3bcdrtu" path="res://game/main/level_handler.gd" id="5_2ag7h"]
 [ext_resource type="Script" uid="uid://byifbfqfyuuca" path="res://game/main/ball_handle.gd" id="5_d6r30"]
 [ext_resource type="PackedScene" uid="uid://b4eswjcip1y2f" path="res://game/main/ball.tscn" id="5_jy2p5"]
+
+[sub_resource type="AudioStream" id="AudioStream_jy2p5"]
 
 [sub_resource type="Environment" id="Environment_i4fjr"]
 background_mode = 1
@@ -24,6 +26,10 @@ size = Vector3(7.515, 3.8, 8.25)
 
 [node name="Ui" type="CanvasLayer" parent="."]
 script = ExtResource("1_jy2p5")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Ui"]
+stream = SubResource("AudioStream_jy2p5")
+autoplay = true
 
 [node name="Control" type="Control" parent="Ui"]
 layout_mode = 3
