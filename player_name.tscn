@@ -1,0 +1,62 @@
+[gd_scene load_steps=3 format=3 uid="uid://cff0ynofp8tjm"]
+
+[ext_resource type="Theme" uid="uid://caep2wqqn68ut" path="res://title screen/theme.tres" id="1_ofq67"]
+[ext_resource type="Script" uid="uid://byl5i5b16e3rx" path="res://player_name.gd" id="2_q1rb4"]
+
+[node name="player_name" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ofq67")
+script = ExtResource("2_q1rb4")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.1909, 0.542405, 0.83, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CenterContainer"]
+visible = false
+layout_mode = 2
+text = "Loading.."
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Enter your name for global leaderboards. 
+Make sure it's appropriate."
+horizontal_alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+placeholder_text = "your_name"
+max_length = 10
+
+[node name="Button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Submit"
+
+[connection signal="text_submitted" from="CenterContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

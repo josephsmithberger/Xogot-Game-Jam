@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 
 WebInputHelper="*res://WebInput.gd"
 Global="*res://Global.gd"
+SilentWolf="*res://addons/silent_wolf/SilentWolf.gd"
 
 [display]
 
@@ -28,6 +29,10 @@ window/size/viewport_width=480
 window/size/viewport_height=640
 window/stretch/mode="canvas_items"
 window/handheld/orientation=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/silent_wolf/plugin.cfg")
 
 [input]
 

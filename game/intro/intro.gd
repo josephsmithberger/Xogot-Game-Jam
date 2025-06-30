@@ -11,7 +11,7 @@ extends Control
 @export var total_slides: int = 9
 
 # The path to your main game scene.
-@export var main_game_scene: String = "res://game/main/game_scene.tscn"
+@export var main_game_scene: String = "res://player_name.tscn"
 
 @onready var dialogue_sounds : AudioStreamPlayer = $dialogue
 # --- PRIVATE VARIABLES ---

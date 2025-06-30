@@ -1,9 +1,16 @@
 extends Node
 
+var player_name : String
+var player_list = []
 
-# Called when the node enters the scene tree for the first time.
+var time : float = 0
+
 func _ready() -> void:
-	pass # Replace with function body.
+	SilentWolf.configure({
+		"api_key": "Dkbu6eMJBD4T568KqSbyoaXq6bYs1Fxq5jDViboq",
+		"game_id": "",
+		"log_level": 1
+	})
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
