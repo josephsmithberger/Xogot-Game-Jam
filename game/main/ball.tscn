@@ -27,7 +27,6 @@ script = ExtResource("1_41u45")
 impact_speed_threshold = 0.3
 
 [node name="bunny" parent="." instance=ExtResource("2_ktgx5")]
-process_mode = 3
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

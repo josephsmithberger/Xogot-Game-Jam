@@ -10,7 +10,9 @@ extends Control
 # Make sure this matches the count of your Label nodes (slide1, slide2, etc.).
 @export var total_slides: int = 1
 
-
+# --- NODES ---
+# Make sure you have an AudioStreamPlayer node named "dialogue" as a child.
+@onready var dialogue_sounds : AudioStreamPlayer = $dialogue
 
 # --- PRIVATE VARIABLES ---
 # These are used by the script to track its state.
@@ -21,6 +23,9 @@ var _current_slide_index: int = 1
 # A flag to check if the text is currently being "typed out".
 # This prevents skipping to the next slide before the current one finishes.
 var _is_typing: bool = false
+
+# Tracks the number of characters that have had a sound played for them.
+var _characters_played_sound_for: int = 0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -47,6 +52,22 @@ func _process(delta: float) -> void:
 		# This makes the "typing" feel consistent regardless of text length.
 		var ratio_increment = (typing_speed / float(text_length)) * delta
 		current_slide_label.visible_ratio += ratio_increment
+		
+		# --- SOUND LOGIC ---
+		# Calculate how many characters should be visible based on the current ratio.
+		var currently_visible_chars = floor(current_slide_label.visible_ratio * text_length)
+
+		# Use a while loop to ensure a sound plays for every new character,
+		# even if the framerate is low and multiple characters appear at once.
+		while _characters_played_sound_for < currently_visible_chars:
+			# Get the character that was just revealed.
+			var new_char = current_slide_label.text[_characters_played_sound_for]
+			# Only play a sound if the character is not a space.
+			if new_char != " ":
+				dialogue_sounds.play()
+			
+			# Increment the counter for the character we just processed.
+			_characters_played_sound_for += 1
 	else:
 		# If the label is empty, just finish it immediately.
 		current_slide_label.visible_ratio = 1.0
@@ -84,7 +105,7 @@ func _go_to_next_slide() -> void:
 
 	# Check if we have gone past the last slide.
 	if _current_slide_index > total_slides:
-		# All slides are done, so change to the main game scene.
+		# All slides are done, so show the container and hide the slide.
 		$CenterContainer.show()
 		$slide1.hide()
 	else:
@@ -108,6 +129,7 @@ func _start_slide(slide_number: int) -> void:
 		target_slide.visible = true
 		target_slide.visible_ratio = 0.0 # Reset the typing effect.
 		_is_typing = true
+		_characters_played_sound_for = 0 # Reset the sound counter for the new slide.
 	else:
 		# This is a safeguard in case a slide node is missing.
 		print("Error: Could not find Label node named 'slide" + str(slide_number) + "'")
