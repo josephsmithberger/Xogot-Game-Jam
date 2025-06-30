@@ -3,17 +3,8 @@ extends Control
 var main_game_scene: String = "res://game/main/game_scene.tscn"
 var is_loading = false
 
-func _on_line_edit_text_submitted(new_text: String) -> void:
-	if not new_text.is_empty():
-		Global.player_name = new_text
-		begin_loading()
-
-
-func _on_button_pressed() -> void:
-	var new_text:String = $CenterContainer/VBoxContainer/LineEdit.text
-	if not new_text.is_empty():
-		Global.player_name = new_text
-		begin_loading()
+func _ready() -> void:
+	begin_loading()
 
 func begin_loading():
 	# Hide editable elements when loading and show loading screen
