@@ -1,81 +1,104 @@
-class_name WebInput 
+
 extends Node
 
-## A singleton for accessing device sensor APIs from the web
-## [br][color=purple]Made by celyk[/color]
-## @tutorial(celyk's repo): https://github.com/celyk/godot-useful-stuff
 
+static var permission_callbacks: Array[Callable] = []
+static var is_setup: bool = false
+static var _orientation: JavaScriptObject
+static var _acceleration: JavaScriptObject
+static var _gravity: JavaScriptObject
+static var _gyroscope: JavaScriptObject
+static var _permission_callback := JavaScriptBridge.create_callback(_on_permission_callback)
 
-# TODO
-# - Test different browsers
+static func _on_permission_callback(args: Array) -> void:
+	for callback in permission_callbacks:
+		callback.call(args)
+	permission_callbacks = []
 
-## Requests and initializes the sensors. Required by iOS to prompt user for permission to access sensors
-static func request_sensors() -> void:
-	if !OS.has_feature("web"): return
-	
-	if _init_sensors() != OK:
+static func _static_init() -> void:
+	if not OS.has_feature("web"):
 		return
-	
-	_is_initialized = true
+	JavaScriptBridge.eval("var _godotPermissionHelper = {}", true)
+	JavaScriptBridge.get_interface("_godotPermissionHelper").callback = _permission_callback
 
-static func get_rotation() -> Vector3:
-	if not _is_initialized: return Vector3()
-		
-	var v := _get_js_vector("rotation")
-	
-	# deg_to_rad()
-	v *= TAU / 360.0
-	
-	return v
+static func request_permission() -> void:
+	if not OS.has_feature("web"):
+		return
+	JavaScriptBridge.eval("""
+if (typeof DeviceMotionEvent.requestPermission === "function") {
+	DeviceMotionEvent.requestPermission().then(_godotPermissionHelper.callback)
+}
+	""", true)
+
+static func setup() -> void:
+	if not OS.has_feature("web"):
+		return
+	is_setup = true
+	JavaScriptBridge.eval("""
+var _godotDeviceOrientation = { x: 0, y: 0, z: 0 };
+var _godotDeviceAcceleration = { x: 0, y: 0, z: 0 };
+var _godotDeviceGravity = { x: 0, y: 0, z: 0 };
+var _godotDeviceGyroscope = { x: 0, y: 0, z: 0 };
+var _godotScreenOrientation = ""
+var _godotScreenOrientationAngle = 0
+
+window.ondeviceorientation = function(event) {
+	_godotDeviceOrientation.x = event.beta;
+	_godotDeviceOrientation.y = event.gamma;
+	_godotDeviceOrientation.z = event.alpha;
+}
+
+window.ondevicemotion = function(event) {
+	if (event.acceleration.x === null) return;
+	_godotDeviceAcceleration.x = event.accelerationIncludingGravity.x;
+	_godotDeviceAcceleration.y = event.accelerationIncludingGravity.y;
+	_godotDeviceAcceleration.z = event.accelerationIncludingGravity.z;
+	_godotDeviceGravity.x = event.accelerationIncludingGravity.x;
+	_godotDeviceGravity.y = event.accelerationIncludingGravity.y;
+	_godotDeviceGravity.z = event.accelerationIncludingGravity.z;
+	_godotDeviceGyroscope.x = event.rotationRate.alpha;
+	_godotDeviceGyroscope.y = event.rotationRate.beta;
+	_godotDeviceGyroscope.z = event.rotationRate.gamma;
+}
+
+screen.orientation.onchange = function(event) {
+	_godotScreenOrientation = event.target.type
+	_godotScreenOrientationAngle = event.target.angle
+}
+	""", true)
+
+static func get_orientation() -> Vector3:
+	if not OS.has_feature("web"):
+		return Vector3()
+	if not _orientation:
+		_orientation = JavaScriptBridge.get_interface("_godotDeviceOrientation")
+	return _vec3_deg_to_rad(_js_object_to_vec3(_orientation))
 
 static func get_accelerometer() -> Vector3:
-	if not _is_initialized: return Input.get_accelerometer()
-	return _browser_to_godot_coordinates(_get_js_vector("acceleration"))
+	if not OS.has_feature("web"):
+		return Input.get_accelerometer()
+	if not _acceleration:
+		_acceleration = JavaScriptBridge.get_interface("_godotDeviceAcceleration")
+	return _reoirent(_js_object_to_vec3(_acceleration))
 
 static func get_gravity() -> Vector3:
-	if not _is_initialized: return Input.get_gravity()
-	return _browser_to_godot_coordinates(_get_js_vector("gravity"))
+	if not OS.has_feature("web"):
+		return Input.get_gravity()
+	if not _gravity:
+		_gravity = JavaScriptBridge.get_interface("_godotDeviceGravity")
+	return _reoirent(_js_object_to_vec3(_gravity))
 
 static func get_gyroscope() -> Vector3:
-	if not _is_initialized: return Input.get_gyroscope()
-	
-	var v := _get_js_vector("gyroscope")
-	
-	# deg_to_rad()
-	v *= TAU / 360.0
-	
-	# Reorient the vector to support all the browsers...
-	v = _browser_to_godot_coordinates(v)
-	
-	return v
+	if not OS.has_feature("web"):
+		return Input.get_gyroscope()
+	if not _gyroscope:
+		_gyroscope = JavaScriptBridge.get_interface("_godotDeviceGyroscope")
+	return _reoirent(_vec3_deg_to_rad(_js_object_to_vec3(_gyroscope)))
 
-static func _browser_to_godot_coordinates(v : Vector3) -> Vector3:
-	#if OS.has_feature("web_ios") || true:
-	#	v = Vector3(-v.x, v.z, v.y)
-	
-	var orientation := _screen_get_orientation()
-	v = _reorient_sensor_vector(v, orientation)
-	
-	return v
-
-static func _reorient_sensor_vector(v : Vector3, i : DisplayServer.ScreenOrientation = 0) -> Vector3:
-	match i:
-		DisplayServer.SCREEN_LANDSCAPE:
-			v = Vector3(-v.y, v.x, v.z)
-		DisplayServer.SCREEN_PORTRAIT:
-			v = Vector3(v.x, v.y, v.z) # Portrait is the default orientation, even on iPad
-		DisplayServer.SCREEN_REVERSE_LANDSCAPE:
-			v = Vector3(v.y, -v.x, v.z)
-		DisplayServer.SCREEN_REVERSE_PORTRAIT:
-			v = Vector3(-v.x, -v.y, v.z)
-	
-	return v
-
-static var _cached_orientation := ""
-static func _screen_get_orientation() -> DisplayServer.ScreenOrientation:
-	if not _is_initialized: return DisplayServer.screen_get_orientation()
-	
-	match _cached_orientation:
+static func get_screen_orientation() -> DisplayServer.ScreenOrientation:
+	if not OS.has_feature("web"):
+		return DisplayServer.screen_get_orientation()
+	match JavaScriptBridge.eval("_godotScreenOrientation", true):
 		"portrait-primary":
 			return DisplayServer.SCREEN_PORTRAIT
 		"portrait-secondary":
@@ -84,93 +107,33 @@ static func _screen_get_orientation() -> DisplayServer.ScreenOrientation:
 			return DisplayServer.SCREEN_LANDSCAPE
 		"landscape-secondary":
 			return DisplayServer.SCREEN_REVERSE_LANDSCAPE
-	
-	return DisplayServer.SCREEN_PORTRAIT 
+		_:
+			return DisplayServer.SCREEN_PORTRAIT
 
-static var _cached_js_objects := {}
-static func _get_js_vector(name:String) -> Vector3:
-	if _cached_js_objects.get(name) == null:
-		_cached_js_objects[name] = JavaScriptBridge.get_interface(name)
-	
-	var js_object : JavaScriptObject = _cached_js_objects[name]
-	return Vector3(js_object.x, js_object.y, js_object.z)
+static func get_screen_orientation_angle() -> float:
+	if not OS.has_feature("web"):
+		return 0
+	return JavaScriptBridge.eval("_godotScreenOrientationAngle")
 
-static var _is_initialized := false
-static var _js_callback : JavaScriptObject
-static func _init_sensors() -> Error:
-	if !OS.has_feature("web"): return ERR_UNAVAILABLE
-	
-	print("Initializing sensors")
-	JavaScriptBridge.eval(_js_code, true)
-	
-	_cached_orientation = JavaScriptBridge.eval("screen_orientation", true)
-	
-	var js_screen : JavaScriptObject = JavaScriptBridge.get_interface("screen")
-	
-	_js_callback = JavaScriptBridge.create_callback(_on_orientation_changed)
-	js_screen.orientation.onchange = _js_callback
-	
-	return OK
+static func _reoirent(vec: Vector3) -> Vector3:
+	match get_screen_orientation():
+		DisplayServer.SCREEN_LANDSCAPE:
+			return Vector3(-vec.y, vec.x, vec.z)
+		DisplayServer.SCREEN_PORTRAIT:
+			return Vector3(vec.x, vec.y, vec.z)
+		DisplayServer.SCREEN_REVERSE_LANDSCAPE:
+			return Vector3(vec.y, -vec.x, vec.z)
+		DisplayServer.SCREEN_REVERSE_PORTRAIT:
+			return Vector3(-vec.x, -vec.y, vec.z)
+		_:
+			return vec
 
-static func _on_orientation_changed(args:Array):
-	_cached_orientation = args[0].target.type
+static func _js_object_to_vec3(object: JavaScriptObject) -> Vector3:
+	return Vector3(object.x, object.y, object.z)
 
-const _js_code := '''
-var rotation = { x: 0, y: 0, z: 0 };
-var acceleration = { x: 0, y: 0, z: 0 };
-var gravity = { x: 0, y: 0, z: 0 };
-var gyroscope = { x: 0, y: 0, z: 0 };
-var screen_orientation = ""
-
-// Not supported by the web
-//var magnetometer = { x: 0, y: 0, z: 0 };
-
-
-function registerMotionListener() {
-	window.ondevicemotion = function(event) {
-		if (event.acceleration.x === null) return;
-		
-		acceleration.x = event.accelerationIncludingGravity.x;
-		acceleration.y = event.accelerationIncludingGravity.y;
-		acceleration.z = event.accelerationIncludingGravity.z;
-		
-		gravity.x = event.accelerationIncludingGravity.x;
-		gravity.y = event.accelerationIncludingGravity.y;
-		gravity.z = event.accelerationIncludingGravity.z;
-		
-		gyroscope.x = event.rotationRate.alpha;
-		gyroscope.y = event.rotationRate.beta;
-		gyroscope.z = event.rotationRate.gamma;
-	}
-	
-	window.ondeviceorientation = function(event) {
-		rotation.x = event.beta;
-		rotation.y = event.gamma;
-		rotation.z = event.alpha;
-	}
-}
-
-// Request permission for iOS 13+ devices
-console.log("Requesting sensors");
-  function onClick() {
-	screen_orientation = screen.orientation.type;
-	
-	// feature detect
-	if (typeof DeviceMotionEvent.requestPermission === 'function') {
-	  DeviceMotionEvent.requestPermission()
-		.then(permissionState => {
-		  if (permissionState === 'granted') {
-			//window.addEventListener('devicemotion', () => {});
-			registerMotionListener();
-		  }
-		})
-		.catch(console.error);
-	} else {
-		// handle regular non iOS 13+ devices
-		registerMotionListener();
-	}
-  }
-
-onClick();
-//window.addEventListener("click", onClick);
-'''
+static func _vec3_deg_to_rad(vec: Vector3) -> Vector3:
+	return Vector3(
+		deg_to_rad(vec.x),
+		deg_to_rad(vec.y),
+		deg_to_rad(vec.z)
+	)

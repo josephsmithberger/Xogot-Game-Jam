@@ -61,4 +61,9 @@ func _reset_ui() -> void:
 
 
 func _on_request_motion_pressed() -> void:
-	WebInputHelper.request_sensors()
+	if OS.has_feature("web"):
+		WebInputHelper.request_permission()
+		WebInputHelper.setup()
+	else:
+		# No action needed on non-web
+		pass

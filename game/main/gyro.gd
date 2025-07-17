@@ -31,6 +31,9 @@ var accel_smoothing_factor := 0.1  # Lower = smoother but less responsive (adjus
 # --- Godot Lifecycle Functions ---
 
 func _ready():
+	# Initialize WebInputHelper on web builds
+	if OS.has_feature("web"):
+		WebInputHelper.setup()
 	# Perform an initial attempt to calibrate motion controls.
 	# On web, this will likely only succeed if permissions were already granted.
 	calibrate_motion_controls()
@@ -81,7 +84,6 @@ func _get_current_acceleration() -> Vector3:
 	always available, especially on the web.
 	"""
 	if OS.has_feature("web"):
-		# The WebInputHelper autoload is expected to be configured for web builds.
 		if not Engine.is_editor_hint() and Engine.has_singleton("JavaScriptBridge"):
 			return WebInputHelper.get_accelerometer()
 		else:
