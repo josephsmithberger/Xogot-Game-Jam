@@ -47,4 +47,4 @@ gi_mode = 0
 multimesh = SubResource("MultiMesh_6hsot")
 
 [node name="house2" parent="." instance=ExtResource("5_8maxd")]
-transform = Transform3D(0.0212528, 0, 0.198868, 0, 0.2, 0, -0.198868, 0, 0.0212528, 0.064, 0.75, -11.682)
+transform = Transform3D(0.0212528, 0, 0.198868, 0, 0.2, 0, -0.198868, 0, 0.0212528, 0.064, 0.57, -11.682)
