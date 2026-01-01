@@ -4,10 +4,10 @@ extends Node
 
 static var permission_callbacks: Array[Callable] = []
 static var is_setup: bool = false
-static var _orientation: JavaScriptObject
-static var _acceleration: JavaScriptObject
-static var _gravity: JavaScriptObject
-static var _gyroscope: JavaScriptObject
+static var _orientation
+static var _acceleration
+static var _gravity
+static var _gyroscope
 static var _permission_callback := JavaScriptBridge.create_callback(_on_permission_callback)
 
 static func _on_permission_callback(args: Array) -> void:
@@ -128,7 +128,7 @@ static func _reoirent(vec: Vector3) -> Vector3:
 		_:
 			return vec
 
-static func _js_object_to_vec3(object: JavaScriptObject) -> Vector3:
+static func _js_object_to_vec3(object) -> Vector3:
 	return Vector3(object.x, object.y, object.z)
 
 static func _vec3_deg_to_rad(vec: Vector3) -> Vector3:
