@@ -8,7 +8,7 @@ static var _orientation
 static var _acceleration
 static var _gravity
 static var _gyroscope
-static var _permission_callback := JavaScriptBridge.create_callback(_on_permission_callback)
+static var _permission_callback
 
 static func _on_permission_callback(args: Array) -> void:
 	for callback in permission_callbacks:
@@ -18,6 +18,7 @@ static func _on_permission_callback(args: Array) -> void:
 static func _static_init() -> void:
 	if not OS.has_feature("web"):
 		return
+	_permission_callback = JavaScriptBridge.create_callback(_on_permission_callback)
 	JavaScriptBridge.eval("var _godotPermissionHelper = {}", true)
 	JavaScriptBridge.get_interface("_godotPermissionHelper").callback = _permission_callback
 
